@@ -13,7 +13,7 @@ This is __NOT__ for Amazon Web Services (AWS) - Cloud Computing Services.
 
 2. add the service provider to the providers array in config/app.php:
 ```
-Sonnenglas\AmazonMws\ServiceProvider::class,
+Waimao\AmazonMws\ServiceProvider::class,
 ```
 
 There's no facades to add in config/app.php
