@@ -48,7 +48,11 @@ Here is an example of a function used to get all warehouse-fulfilled orders from
 use Sonnenglas\AmazonMws\AmazonOrderList;
 
 function getAmazonOrders() {
-    $amz = new AmazonOrderList("myStore"); //store name matches the array key in the config file
+    $amz = new AmazonOrderList(['merchantId' => '',
+            'marketplaceId' => '',
+            'keyId' => '',
+            'secretKey' => '',
+            'amazonServiceUrl' => 'https://mws-eu.amazonservices.com/']); //store name matches the array key in the config file
     $amz->setLimits('Modified', "- 24 hours");
     $amz->setFulfillmentChannelFilter("MFN"); //no Amazon-fulfilled orders
     $amz->setOrderStatusFilter(
@@ -64,7 +68,11 @@ This example shows a function used to send a previously-created XML feed to Amaz
 use Sonnenglas\AmazonMws\AmazonOrderList;
 
 function sendInventoryFeed($feed) {
-    $amz = new AmazonFeed("myStore"); //store name matches the array key in the config file
+    $amz = new AmazonFeed(['merchantId' => '',
+            'marketplaceId' => '',
+            'keyId' => '',
+            'secretKey' => '',
+            'amazonServiceUrl' => 'https://mws-eu.amazonservices.com/']); //store name matches the array key in the config file
     $amz->setFeedType("_POST_INVENTORY_AVAILABILITY_DATA_"); //feed types listed in documentation
     $amz->setFeedContent($feed);
     $amz->submitFeed();
