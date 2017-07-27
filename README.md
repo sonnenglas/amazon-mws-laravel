@@ -9,11 +9,11 @@ This is __NOT__ for Amazon Web Services (AWS) - Cloud Computing Services.
 
 ## Installation
 
-1. `composer require sonnenglas/laravel5-amazon-mws`
+1. `composer require waimao/laravel5-amazon-mws`
 
 2. add the service provider to the providers array in config/app.php:
 ```
-Sonnenglas\AmazonMws\ServiceProvider::class,
+Waimao\AmazonMws\ServiceProvider::class,
 ```
 
 There's no facades to add in config/app.php
@@ -48,7 +48,11 @@ Here is an example of a function used to get all warehouse-fulfilled orders from
 use Sonnenglas\AmazonMws\AmazonOrderList;
 
 function getAmazonOrders() {
-    $amz = new AmazonOrderList("myStore"); //store name matches the array key in the config file
+    $amz = new AmazonOrderList(['merchantId' => '',
+            'marketplaceId' => '',
+            'keyId' => '',
+            'secretKey' => '',
+            'amazonServiceUrl' => 'https://mws-eu.amazonservices.com/']); //store name matches the array key in the config file
     $amz->setLimits('Modified', "- 24 hours");
     $amz->setFulfillmentChannelFilter("MFN"); //no Amazon-fulfilled orders
     $amz->setOrderStatusFilter(
@@ -64,7 +68,11 @@ This example shows a function used to send a previously-created XML feed to Amaz
 use Sonnenglas\AmazonMws\AmazonOrderList;
 
 function sendInventoryFeed($feed) {
-    $amz = new AmazonFeed("myStore"); //store name matches the array key in the config file
+    $amz = new AmazonFeed(['merchantId' => '',
+            'marketplaceId' => '',
+            'keyId' => '',
+            'secretKey' => '',
+            'amazonServiceUrl' => 'https://mws-eu.amazonservices.com/']); //store name matches the array key in the config file
     $amz->setFeedType("_POST_INVENTORY_AVAILABILITY_DATA_"); //feed types listed in documentation
     $amz->setFeedContent($feed);
     $amz->submitFeed();

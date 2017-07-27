@@ -1,4 +1,4 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Waimao\AmazonMws;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -22,8 +22,8 @@ class ServiceProvider extends BaseServiceProvider
         $configPath = __DIR__ . '/config/amazon-mws.php';
         $this->mergeConfigFrom($configPath, 'amazon-mws');
 
-        $this->app->alias('AmazonOrderList', 'Sonnenglas\AmazonMws\AmazonOrderList');
-        $this->app->alias('AmazonOrderItemList', 'Sonnenglas\AmazonMws\AmazonOrderItemList');
+        $this->app->alias('AmazonOrderList', 'Waimao\AmazonMws\AmazonOrderList');
+        $this->app->alias('AmazonOrderItemList', 'Waimao\AmazonMws\AmazonOrderItemList');
     }
 
     public function boot()

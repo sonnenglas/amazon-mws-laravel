@@ -1,6 +1,6 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Waimao\AmazonMws;
 
-use Sonnenglas\AmazonMws\AmazonCore;
+use Waimao\AmazonMws\AmazonCore;
 
 /**
  * Copyright 2013 CPI Group, LLC
@@ -38,7 +38,7 @@ abstract class AmazonProductsCore extends AmazonCore
      * The parameters are passed by the child objects' constructors, which are
      * in turn passed to the AmazonCore constructor. See it for more information
      * on these parameters and common methods.
-     * @param string $s <p>Name for the store you want to use.</p>
+     * @param array $s <p>Store config array.</p>
      * @param boolean $mock [optional] <p>This is a flag for enabling Mock Mode.
      * This defaults to <b>FALSE</b>.</p>
      * @param array|string $m [optional] <p>The files (or file) to use in Mock Mode.</p>
@@ -54,9 +54,9 @@ abstract class AmazonProductsCore extends AmazonCore
             $this->options['Version'] = $AMAZON_VERSION_PRODUCTS;
         }
 
-        $store = config('amazon-mws.store');
-        if (isset($store[$s]) && array_key_exists('marketplaceId', $store[$s])) {
-            $this->options['MarketplaceId'] = $store[$s]['marketplaceId'];
+        //$store = config('amazon-mws.store');
+        if (isset($s) && array_key_exists('marketplaceId', $s)) {
+            $this->options['MarketplaceId'] = $s['marketplaceId'];
         } else {
             $this->log("Marketplace ID is missing", 'Urgent');
         }
