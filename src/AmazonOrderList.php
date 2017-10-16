@@ -1,4 +1,5 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php
+namespace Properos\AmazonMws;
 
 use Config;
 use Iterator;
@@ -30,6 +31,7 @@ use Iterator;
  */
 class AmazonOrderList extends AmazonOrderCore implements Iterator
 {
+
     private $orderList;
     private $i = 0;
     protected $tokenFlag = false;
@@ -52,16 +54,9 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
     {
         parent::__construct($s, $mock, $m);
         include($this->env);
-        // if (file_exists($this->config)){
-        //     include($this->config);
-        // } else {
-        //     throw new \Exception('Config file does not exist!');
-        // }
 
-        $store = Config::get('amazon-mws.store');
-
-        if (isset($store[$s]) && array_key_exists('marketplaceId', $store[$s])) {
-            $this->options['MarketplaceId.Id.1'] = $store[$s]['marketplaceId'];
+        if (is_string($this->marketplaceId)) {
+            $this->options['MarketplaceId.Id.1'] = $this->marketplaceId;
         } else {
             $this->log("Marketplace ID is missing", 'Urgent');
         }
@@ -148,12 +143,10 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
                     return false;
                 }
             }
-
         } catch (\Exception $e) {
             $this->log('Error: ' . $e->getMessage(), 'Warning');
             return false;
         }
-
     }
 
     /**
@@ -353,8 +346,7 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
      */
     public function fetchOrders($r = true)
     {
-        if (!array_key_exists('CreatedAfter', $this->options) && !array_key_exists('LastUpdatedAfter',
-                $this->options)
+        if (!array_key_exists('CreatedAfter', $this->options) && !array_key_exists('LastUpdatedAfter', $this->options)
         ) {
             $this->setLimits('Created');
         }
@@ -387,7 +379,6 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
                 $this->log("Recursively fetching more orders");
                 $this->fetchOrders(false);
             }
-
         }
     }
 
@@ -416,7 +407,6 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
             unset($this->options['CreatedAfter']);
             unset($this->options['CreatedBefore']);
             unset($this->options['MaxResultsPerPage']);
-
         } else {
             $this->options['Action'] = 'ListOrders';
             unset($this->options['NextToken']);
@@ -442,12 +432,10 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
             if ($key != 'Order') {
                 break;
             }
-            $this->orderList[$this->index] = new AmazonOrder($this->storeName, null, $data, $this->mockMode,
-                $this->mockFiles, $this->config);
+            $this->orderList[$this->index] = new AmazonOrder($this->storeName, null, $data, $this->mockMode, $this->mockFiles, $this->config);
             $this->orderList[$this->index]->mockIndex = $this->mockIndex;
             $this->index++;
         }
-
     }
 
     /**
@@ -490,7 +478,6 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
         } else {
             return false;
         }
-
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php 
-namespace Sonnenglas\AmazonMws;
+namespace Properos\AmazonMws;
  
-use Sonnenglas\AmazonMws\AmazonFeedsCore;
+use Properos\AmazonMws\AmazonFeedsCore;
 
 /**
  * Copyright 2013 CPI Group, LLC
