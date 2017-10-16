@@ -108,7 +108,8 @@ abstract class AmazonCore
     protected $throttleStop = false;
     protected $storeName;
     protected $secretKey = '';
-    protected $marketplaceId = [];
+    protected $marketplaceId = '';
+    protected $mwsAuthToken = '';
     protected $options;
     protected $config;
     protected $mockMode = false;
@@ -396,30 +397,40 @@ abstract class AmazonCore
      * for making requests with Amazon. If the store cannot be found in the
      * config file, or if any of the key values are missing,
      * the incident will be logged.
-     * @param string $s <p>The store name to look for.</p>
+     * @param array|string $s <p>The store name to look for.</p>
      * @throws Exception If the file can't be found.
      */
     public function setStore($s)
     {
         if (is_array($s)) {
-            if (isset($s['merchantId'])) {
-                $this->options['SellerId'] = $s['merchantId'];
+            if (isset($s['seller_id'])) {
+                $this->options['SellerId'] = $s['seller_id'];
             } else {
                 $this->log("Merchant ID is missing!", 'Warning');
             }
-            if (isset($s['keyId'])) {
-                $this->options['AWSAccessKeyId'] = $s['keyId'];
+            if (isset($s['aws_key_id'])) {
+                $this->options['AWSAccessKeyId'] = $s['aws_key_id'];
             } else {
                 $this->log("Access Key ID is missing!", 'Warning');
             }
-            if (isset($s['secretKey'])) {
-                $this->secretKey = $s['secretKey'];
+            if (isset($s['secret_key'])) {
+                $this->secretKey = $s['secret_key'];
             } else {
                 $this->log("Secret Key is missing!", 'Warning');
             }
+            if (isset($s['mws_auth_token'])) {
+                $this->mwsAuthToken = $s['mws_auth_token'];
+            } else {
+                $this->log("MWS Auth Token is missing!", 'Warning');
+            }
+            if (isset($s['marketplace_id'])) {
+                $this->marketplaceId = $s['marketplace_id'];
+            } else {
+                $this->log("Marketplace ID is missing!", 'Warning');
+            }
             // Overwrite Amazon service url if specified
-            if (isset($s['amazonServiceUrl'])) {
-                $AMAZON_SERVICE_URL = $s['amazonServiceUrl'];
+            if (isset($s['url'])) {
+                $AMAZON_SERVICE_URL = $s['url'];
                 $this->urlbase = $AMAZON_SERVICE_URL;
             }
         } else {
