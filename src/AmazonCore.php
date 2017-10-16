@@ -1,9 +1,10 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php
+namespace Properos\AmazonMws;
 
-use Config, Log;
+use Config,
+    Log;
 use DateTime;
 use Exception;
-
 
 /**
  * Copyright 2013 CPI Group, LLC
@@ -97,6 +98,7 @@ use Exception;
  */
 abstract class AmazonCore
 {
+
     protected $urlbase;
     protected $urlbranch;
     protected $throttleLimit;
@@ -105,6 +107,8 @@ abstract class AmazonCore
     protected $throttleGroup;
     protected $throttleStop = false;
     protected $storeName;
+    protected $secretKey = '';
+    protected $marketplaceId = [];
     protected $options;
     protected $config;
     protected $mockMode = false;
@@ -217,8 +221,7 @@ abstract class AmazonCore
             $this->resetMock();
         }
         //check for absolute/relative file paths
-        if (strpos($this->mockFiles[$this->mockIndex], '/') === 0 || strpos($this->mockFiles[$this->mockIndex],
-                '..') === 0
+        if (strpos($this->mockFiles[$this->mockIndex], '/') === 0 || strpos($this->mockFiles[$this->mockIndex], '..') === 0
         ) {
             $url = $this->mockFiles[$this->mockIndex];
         } else {
@@ -241,12 +244,10 @@ abstract class AmazonCore
                 $this->log("Error when opening Mock File: $url - " . $e->getMessage(), 'Warning');
                 return false;
             }
-
         } else {
             $this->log("Mock File not found: $url", 'Warning');
             return false;
         }
-
     }
 
     /**
@@ -362,8 +363,7 @@ abstract class AmazonCore
             return true;
         } else {
             $xml = simplexml_load_string($r['body'])->Error;
-            $this->log("Bad Response! " . $r['code'] . " " . $r['error'] . ": " . $xml->Code . " - " . $xml->Message,
-                'Urgent');
+            $this->log("Bad Response! " . $r['code'] . " " . $r['error'] . ": " . $xml->Code . " - " . $xml->Message, 'Urgent');
             return false;
         }
     }
@@ -401,38 +401,56 @@ abstract class AmazonCore
      */
     public function setStore($s)
     {
-        // if (file_exists($this->config)){
-        //     include($this->config);
-        // } else {
-        //     throw new \Exception("Config file does not exist!");
-        // }
-
-        $store = Config::get('amazon-mws.store');
-
-        if (array_key_exists($s, $store)) {
-            $this->storeName = $s;
-            if (array_key_exists('merchantId', $store[$s])) {
-                $this->options['SellerId'] = $store[$s]['merchantId'];
+        if (is_array($s)) {
+            if (isset($s['merchantId'])) {
+                $this->options['SellerId'] = $s['merchantId'];
             } else {
                 $this->log("Merchant ID is missing!", 'Warning');
             }
-            if (array_key_exists('keyId', $store[$s])) {
-                $this->options['AWSAccessKeyId'] = $store[$s]['keyId'];
+            if (isset($s['keyId'])) {
+                $this->options['AWSAccessKeyId'] = $s['keyId'];
             } else {
                 $this->log("Access Key ID is missing!", 'Warning');
             }
-            if (!array_key_exists('secretKey', $store[$s])) {
+            if (isset($s['secretKey'])) {
+                $this->secretKey = $s['secretKey'];
+            } else {
                 $this->log("Secret Key is missing!", 'Warning');
             }
             // Overwrite Amazon service url if specified
-            if (array_key_exists('amazonServiceUrl', $store[$s])) {
-                $AMAZON_SERVICE_URL = $store[$s]['amazonServiceUrl'];
+            if (isset($s['amazonServiceUrl'])) {
+                $AMAZON_SERVICE_URL = $s['amazonServiceUrl'];
                 $this->urlbase = $AMAZON_SERVICE_URL;
             }
-
         } else {
-            throw new \Exception("Store $s does not exist!");
-            $this->log("Store $s does not exist!", 'Warning');
+            $store = Config::get('amazon-mws.store');
+
+            if (array_key_exists($s, $store)) {
+                $this->storeName = $s;
+                if (array_key_exists('merchantId', $store[$s])) {
+                    $this->options['SellerId'] = $store[$s]['merchantId'];
+                } else {
+                    $this->log("Merchant ID is missing!", 'Warning');
+                }
+                if (array_key_exists('keyId', $store[$s])) {
+                    $this->options['AWSAccessKeyId'] = $store[$s]['keyId'];
+                } else {
+                    $this->log("Access Key ID is missing!", 'Warning');
+                }
+                if (array_key_exists('secretKey', $store[$s])) {
+                    $this->secretKey = $store[$s]['secretKey'];
+                } else {
+                    $this->log("Secret Key is missing!", 'Warning');
+                }
+                // Overwrite Amazon service url if specified
+                if (array_key_exists('amazonServiceUrl', $store[$s])) {
+                    $AMAZON_SERVICE_URL = $store[$s]['amazonServiceUrl'];
+                    $this->urlbase = $AMAZON_SERVICE_URL;
+                }
+            } else {
+                throw new \Exception("Store $s does not exist!");
+                $this->log("Store $s does not exist!", 'Warning');
+            }
         }
     }
 
@@ -515,7 +533,6 @@ abstract class AmazonCore
             } else {
                 $ip = 'cli';
             }
-
         } else {
             return false;
         }
@@ -551,10 +568,8 @@ abstract class AmazonCore
             $time = time();
         } else {
             $time = strtotime($time);
-
         }
         return date(DateTime::ISO8601, $time - 120);
-
     }
 
     /**
@@ -568,23 +583,13 @@ abstract class AmazonCore
      */
     protected function genQuery()
     {
-        // if (file_exists($this->config)){
-        //     include($this->config);
-        // } else {
-        //     throw new Exception("Config file does not exist!");
-        // }
-
-        $store = Config::get('amazon-mws.store');
-
-        if (array_key_exists($this->storeName, $store) && array_key_exists('secretKey', $store[$this->storeName])) {
-            $secretKey = $store[$this->storeName]['secretKey'];
-        } else {
+        if ($this->secretKey == '') {
             throw new Exception("Secret Key is missing!");
         }
 
         unset($this->options['Signature']);
         $this->options['Timestamp'] = $this->genTime();
-        $this->options['Signature'] = $this->_signParameters($this->options, $secretKey);
+        $this->options['Signature'] = $this->_signParameters($this->options, $this->secretKey);
         return $this->_getParametersAsString($this->options);
     }
 
@@ -674,7 +679,7 @@ abstract class AmazonCore
         }
         if ($xml->NextToken) {
             $this->tokenFlag = true;
-            $this->options['NextToken'] = (string)$xml->NextToken;
+            $this->options['NextToken'] = (string) $xml->NextToken;
         } else {
             unset($this->options['NextToken']);
             $this->tokenFlag = false;
@@ -762,8 +767,8 @@ abstract class AmazonCore
         curl_close($ch);
         return $return;
     }
-    // End Functions from Athena
 
+    // End Functions from Athena
     // Functions from Amazon:
     /**
      * Reformats the provided string using rawurlencode while also replacing ~, copied from Amazon
@@ -825,7 +830,7 @@ abstract class AmazonCore
         $data .= $endpoint['host'];
         $data .= "\n";
         $uri = array_key_exists('path', $endpoint) ? $endpoint['path'] : null;
-        if (!isset ($uri)) {
+        if (!isset($uri)) {
             $uri = "/";
         }
         $uriencoded = implode("/", array_map(array($this, "_urlencode"), explode("/", $uri)));
@@ -852,7 +857,7 @@ abstract class AmazonCore
             if ($algorithm === 'HmacSHA256') {
                 $hash = 'sha256';
             } else {
-                throw new Exception ("Non-supported signing method specified");
+                throw new Exception("Non-supported signing method specified");
             }
         }
 
@@ -860,9 +865,7 @@ abstract class AmazonCore
             hash_hmac($hash, $data, $key, true)
         );
     }
-
     // -- End Functions from Amazon --
-
 }
 
 ?>
