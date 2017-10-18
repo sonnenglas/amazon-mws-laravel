@@ -876,6 +876,18 @@ abstract class AmazonCore
             hash_hmac($hash, $data, $key, true)
         );
     }
+
+    protected function getStore()
+    {
+        return [
+            'seller_id' => $this->options['SellerId'],
+            'aws_key_id' => $this->options['AWSAccessKeyId'],
+            'secret_key' => $this->secretKey,
+            'mws_auth_token' => $this->mwsAuthToken,
+            'marketplace_id' => $this->marketplaceId,
+            'url' => $this->urlbase,
+        ];
+    }
     // -- End Functions from Amazon --
 }
 

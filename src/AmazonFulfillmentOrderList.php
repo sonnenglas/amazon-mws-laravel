@@ -272,7 +272,7 @@ class AmazonFulfillmentOrderList extends AmazonOutboundCore implements \Iterator
         $list = array();
         $i = 0;
         foreach ($this->orderList as $x) {
-            $list[$i] = new AmazonFulfillmentOrder($this->storeName, $x['SellerFulfillmentOrderId'], $this->mockMode,
+            $list[$i] = new AmazonFulfillmentOrder($this->getStore(), $x['SellerFulfillmentOrderId'], $this->mockMode,
                 $this->mockFiles, $this->config);
             $list[$i]->mockIndex = $this->mockIndex;
             $list[$i]->fetchOrder();
