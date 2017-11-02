@@ -79,10 +79,10 @@ class AmazonOrder extends AmazonOrderCore
     {
         if (is_string($id) || is_numeric($id)) {
             $this->options['AmazonOrderId.Id.1'] = $id;
-        } else {
-            $this->log("Attempted to set AmazonOrderId to invalid value", 'Warning');
-            return false;
+            return true;
         }
+        $this->log("Attempted to set AmazonOrderId to invalid value", 'Warning');
+        return false;
     }
 
     /**
@@ -226,6 +226,7 @@ class AmazonOrder extends AmazonOrderCore
         if (isset($xml->BuyerEmail)) {
             $d['BuyerEmail'] = (string)$xml->BuyerEmail;
         }
+
         if (isset($xml->PaymentMethodDetails)) {
             $d['PaymentMethodDetails'] = array();
 
@@ -235,7 +236,7 @@ class AmazonOrder extends AmazonOrderCore
                 $i++;
             }
         }
-        if (isset($xml->ShipmentServiceLevelCategory)) {
+        if (isset($xml->ShipmentServiceLevelCategory)){
             $d['ShipmentServiceLevelCategory'] = (string)$xml->ShipmentServiceLevelCategory;
         }
         if (isset($xml->CbaDisplayableShippingLabel)){
