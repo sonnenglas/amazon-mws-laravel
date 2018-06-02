@@ -78,12 +78,11 @@ abstract class AmazonProductsCore extends AmazonCore
         if (!$xml) {
             return false;
         }
-
         foreach ($xml->children() as $x) {
             if ($x->getName() == 'ResponseMetadata') {
                 continue;
             }
-            $temp = (array) $x->attributes();
+            $temp = (array)$x->attributes();
             if (isset($temp['@attributes']['status']) && $temp['@attributes']['status'] != 'Success') {
                 $this->log("Warning: product return was not successful", 'Warning');
             }
@@ -99,11 +98,11 @@ abstract class AmazonProductsCore extends AmazonCore
                 } else {
                     foreach ($x->children() as $z) {
                         if ($z->getName() == 'Error') {
-                            $error = (string) $z->Message;
+                            $error = (string)$z->Message;
                             $this->productList['Error'] = $error;
                             $this->log("Product Error: $error", 'Warning');
                         } elseif ($z->getName() != 'Product') {
-                            $this->productList[$z->getName()] = (string) $z;
+                            $this->productList[$z->getName()] = (string)$z;
                             $this->log("Special case: " . $z->getName(), 'Warning');
                         } else {
                             $this->productList[$this->index] = new AmazonProduct($this->getStore(), $z, $this->mockMode, $this->mockFiles);

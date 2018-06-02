@@ -162,12 +162,13 @@ class AmazonProductSearch extends AmazonProductsCore
             $xml = $this->fetchMockFile();
         } else {
             $response = $this->sendRequest($url, array('Post' => $query));
-
+            
             if (!$this->checkResponse($response)) {
                 return false;
             }
 
-            $xml = simplexml_load_string($response['body']);
+            $xml = simplexml_load_string(str_replace('ns2:','',$response['body']));
+
         }
 
         $this->parseXML($xml);

@@ -222,8 +222,7 @@ abstract class AmazonCore
             $this->resetMock();
         }
         //check for absolute/relative file paths
-        if (strpos($this->mockFiles[$this->mockIndex], '/') === 0 || strpos($this->mockFiles[$this->mockIndex], '..') === 0
-        ) {
+        if (strpos($this->mockFiles[$this->mockIndex], '/') === 0 || strpos($this->mockFiles[$this->mockIndex], '..') === 0) {
             $url = $this->mockFiles[$this->mockIndex];
         } else {
             $url = 'mock/' . $this->mockFiles[$this->mockIndex];
@@ -433,6 +432,7 @@ abstract class AmazonCore
                 $AMAZON_SERVICE_URL = $s['url'];
                 $this->urlbase = $AMAZON_SERVICE_URL;
             }
+
         } else {
             $store = Config::get('amazon-mws.store');
 
@@ -462,6 +462,10 @@ abstract class AmazonCore
                 throw new \Exception("Store $s does not exist!");
                 $this->log("Store $s does not exist!", 'Warning');
             }
+        }
+        
+        if (isset($s['disable_ssl'])) {
+            $this->options['disable_ssl'] = $s['disable_ssl'];
         }
     }
 
@@ -498,16 +502,16 @@ abstract class AmazonCore
             $muteLog = Config::get('amazon-mws.muteLog');
 
             switch ($level) {
-                case('Info'):
+                case ('Info'):
                     $loglevel = 'info';
                     break;
-                case('Throttle'):
+                case ('Throttle'):
                     $loglevel = 'info';
                     break;
-                case('Warning'):
+                case ('Warning'):
                     $loglevel = 'notice';
                     break;
-                case('Urgent'):
+                case ('Urgent'):
                     $loglevel = 'error';
                     break;
                 default:
@@ -690,7 +694,7 @@ abstract class AmazonCore
         }
         if ($xml->NextToken) {
             $this->tokenFlag = true;
-            $this->options['NextToken'] = (string) $xml->NextToken;
+            $this->options['NextToken'] = (string)$xml->NextToken;
         } else {
             unset($this->options['NextToken']);
             $this->tokenFlag = false;
@@ -713,6 +717,12 @@ abstract class AmazonCore
         $return = array();
 
         $ch = curl_init();
+
+        if (array_key_exists('disable_ssl', $this->options)) {
+            if ($this->options['disable_ssl'] == true) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            }
+        }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 0);

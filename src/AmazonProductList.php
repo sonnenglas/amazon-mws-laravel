@@ -122,6 +122,7 @@ class AmazonProductList extends AmazonProductsCore implements \Iterator
     public function fetchProductList()
     {
         if (!array_key_exists('IdList.Id.1', $this->options)) {
+
             $this->log("Product IDs must be set in order to fetch them!", 'Warning');
             return false;
         }
@@ -137,15 +138,15 @@ class AmazonProductList extends AmazonProductsCore implements \Iterator
         if ($this->mockMode) {
             $xml = $this->fetchMockFile();
         } else {
+
             $response = $this->sendRequest($url, array('Post' => $query));
 
             if (!$this->checkResponse($response)) {
                 return false;
             }
-
             $xml = simplexml_load_string($response['body']);
         }
-
+        
         $this->parseXML($xml);
     }
 
