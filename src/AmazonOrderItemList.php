@@ -1,4 +1,4 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Properos\AmazonMws;
 
 use Iterator;
 

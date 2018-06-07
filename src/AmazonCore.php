@@ -1,9 +1,10 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php
+namespace Properos\AmazonMws;
 
-use Config, Log;
+use Config,
+    Log;
 use DateTime;
 use Exception;
-
 
 /**
  * Copyright 2013 CPI Group, LLC
@@ -97,6 +98,7 @@ use Exception;
  */
 abstract class AmazonCore
 {
+
     protected $urlbase;
     protected $urlbranch;
     protected $throttleLimit;
@@ -105,6 +107,9 @@ abstract class AmazonCore
     protected $throttleGroup;
     protected $throttleStop = false;
     protected $storeName;
+    protected $secretKey = '';
+    protected $marketplaceId = '';
+    protected $mwsAuthToken = '';
     protected $options;
     protected $config;
     protected $mockMode = false;
@@ -217,9 +222,7 @@ abstract class AmazonCore
             $this->resetMock();
         }
         //check for absolute/relative file paths
-        if (strpos($this->mockFiles[$this->mockIndex], '/') === 0 || strpos($this->mockFiles[$this->mockIndex],
-                '..') === 0
-        ) {
+        if (strpos($this->mockFiles[$this->mockIndex], '/') === 0 || strpos($this->mockFiles[$this->mockIndex], '..') === 0) {
             $url = $this->mockFiles[$this->mockIndex];
         } else {
             $url = 'mock/' . $this->mockFiles[$this->mockIndex];
@@ -241,12 +244,10 @@ abstract class AmazonCore
                 $this->log("Error when opening Mock File: $url - " . $e->getMessage(), 'Warning');
                 return false;
             }
-
         } else {
             $this->log("Mock File not found: $url", 'Warning');
             return false;
         }
-
     }
 
     /**
@@ -362,8 +363,7 @@ abstract class AmazonCore
             return true;
         } else {
             $xml = simplexml_load_string($r['body'])->Error;
-            $this->log("Bad Response! " . $r['code'] . " " . $r['error'] . ": " . $xml->Code . " - " . $xml->Message,
-                'Urgent');
+            $this->log("Bad Response! " . $r['code'] . " " . $r['error'] . ": " . $xml->Code . " - " . $xml->Message, 'Urgent');
             return false;
         }
     }
@@ -396,43 +396,76 @@ abstract class AmazonCore
      * for making requests with Amazon. If the store cannot be found in the
      * config file, or if any of the key values are missing,
      * the incident will be logged.
-     * @param string $s <p>The store name to look for.</p>
+     * @param array|string $s <p>The store name to look for.</p>
      * @throws Exception If the file can't be found.
      */
     public function setStore($s)
     {
-        // if (file_exists($this->config)){
-        //     include($this->config);
-        // } else {
-        //     throw new \Exception("Config file does not exist!");
-        // }
-
-        $store = Config::get('amazon-mws.store');
-
-        if (array_key_exists($s, $store)) {
-            $this->storeName = $s;
-            if (array_key_exists('merchantId', $store[$s])) {
-                $this->options['SellerId'] = $store[$s]['merchantId'];
+        if (is_array($s)) {
+            if (isset($s['seller_id'])) {
+                $this->options['SellerId'] = $s['seller_id'];
             } else {
                 $this->log("Merchant ID is missing!", 'Warning');
             }
-            if (array_key_exists('keyId', $store[$s])) {
-                $this->options['AWSAccessKeyId'] = $store[$s]['keyId'];
+            if (isset($s['aws_key_id'])) {
+                $this->options['AWSAccessKeyId'] = $s['aws_key_id'];
             } else {
                 $this->log("Access Key ID is missing!", 'Warning');
             }
-            if (!array_key_exists('secretKey', $store[$s])) {
+            if (isset($s['secret_key'])) {
+                $this->secretKey = $s['secret_key'];
+            } else {
                 $this->log("Secret Key is missing!", 'Warning');
             }
+            if (isset($s['mws_auth_token'])) {
+                $this->mwsAuthToken = $s['mws_auth_token'];
+            } else {
+                $this->log("MWS Auth Token is missing!", 'Warning');
+            }
+            if (isset($s['marketplace_id'])) {
+                $this->marketplaceId = $s['marketplace_id'];
+            } else {
+                $this->log("Marketplace ID is missing!", 'Warning');
+            }
             // Overwrite Amazon service url if specified
-            if (array_key_exists('amazonServiceUrl', $store[$s])) {
-                $AMAZON_SERVICE_URL = $store[$s]['amazonServiceUrl'];
+            if (isset($s['url'])) {
+                $AMAZON_SERVICE_URL = $s['url'];
                 $this->urlbase = $AMAZON_SERVICE_URL;
             }
 
         } else {
-            throw new \Exception("Store $s does not exist!");
-            $this->log("Store $s does not exist!", 'Warning');
+            $store = Config::get('amazon-mws.store');
+
+            if (array_key_exists($s, $store)) {
+                $this->storeName = $s;
+                if (array_key_exists('merchantId', $store[$s])) {
+                    $this->options['SellerId'] = $store[$s]['merchantId'];
+                } else {
+                    $this->log("Merchant ID is missing!", 'Warning');
+                }
+                if (array_key_exists('keyId', $store[$s])) {
+                    $this->options['AWSAccessKeyId'] = $store[$s]['keyId'];
+                } else {
+                    $this->log("Access Key ID is missing!", 'Warning');
+                }
+                if (array_key_exists('secretKey', $store[$s])) {
+                    $this->secretKey = $store[$s]['secretKey'];
+                } else {
+                    $this->log("Secret Key is missing!", 'Warning');
+                }
+                // Overwrite Amazon service url if specified
+                if (array_key_exists('amazonServiceUrl', $store[$s])) {
+                    $AMAZON_SERVICE_URL = $store[$s]['amazonServiceUrl'];
+                    $this->urlbase = $AMAZON_SERVICE_URL;
+                }
+            } else {
+                throw new \Exception("Store $s does not exist!");
+                $this->log("Store $s does not exist!", 'Warning');
+            }
+        }
+        
+        if (isset($s['disable_ssl'])) {
+            $this->options['disable_ssl'] = $s['disable_ssl'];
         }
     }
 
@@ -469,16 +502,16 @@ abstract class AmazonCore
             $muteLog = Config::get('amazon-mws.muteLog');
 
             switch ($level) {
-                case('Info'):
+                case ('Info'):
                     $loglevel = 'info';
                     break;
-                case('Throttle'):
+                case ('Throttle'):
                     $loglevel = 'info';
                     break;
-                case('Warning'):
+                case ('Warning'):
                     $loglevel = 'notice';
                     break;
-                case('Urgent'):
+                case ('Urgent'):
                     $loglevel = 'error';
                     break;
                 default:
@@ -515,7 +548,6 @@ abstract class AmazonCore
             } else {
                 $ip = 'cli';
             }
-
         } else {
             return false;
         }
@@ -551,10 +583,8 @@ abstract class AmazonCore
             $time = time();
         } else {
             $time = strtotime($time);
-
         }
         return date(DateTime::ISO8601, $time - 120);
-
     }
 
     /**
@@ -568,23 +598,13 @@ abstract class AmazonCore
      */
     protected function genQuery()
     {
-        // if (file_exists($this->config)){
-        //     include($this->config);
-        // } else {
-        //     throw new Exception("Config file does not exist!");
-        // }
-
-        $store = Config::get('amazon-mws.store');
-
-        if (array_key_exists($this->storeName, $store) && array_key_exists('secretKey', $store[$this->storeName])) {
-            $secretKey = $store[$this->storeName]['secretKey'];
-        } else {
+        if ($this->secretKey == '') {
             throw new Exception("Secret Key is missing!");
         }
 
         unset($this->options['Signature']);
         $this->options['Timestamp'] = $this->genTime();
-        $this->options['Signature'] = $this->_signParameters($this->options, $secretKey);
+        $this->options['Signature'] = $this->_signParameters($this->options, $this->secretKey);
         return $this->_getParametersAsString($this->options);
     }
 
@@ -698,6 +718,12 @@ abstract class AmazonCore
 
         $ch = curl_init();
 
+        if (array_key_exists('disable_ssl', $this->options)) {
+            if ($this->options['disable_ssl'] == true) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            }
+        }
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 0);
         curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
@@ -762,8 +788,8 @@ abstract class AmazonCore
         curl_close($ch);
         return $return;
     }
-    // End Functions from Athena
 
+    // End Functions from Athena
     // Functions from Amazon:
     /**
      * Reformats the provided string using rawurlencode while also replacing ~, copied from Amazon
@@ -825,7 +851,7 @@ abstract class AmazonCore
         $data .= $endpoint['host'];
         $data .= "\n";
         $uri = array_key_exists('path', $endpoint) ? $endpoint['path'] : null;
-        if (!isset ($uri)) {
+        if (!isset($uri)) {
             $uri = "/";
         }
         $uriencoded = implode("/", array_map(array($this, "_urlencode"), explode("/", $uri)));
@@ -852,7 +878,7 @@ abstract class AmazonCore
             if ($algorithm === 'HmacSHA256') {
                 $hash = 'sha256';
             } else {
-                throw new Exception ("Non-supported signing method specified");
+                throw new Exception("Non-supported signing method specified");
             }
         }
 
@@ -861,8 +887,18 @@ abstract class AmazonCore
         );
     }
 
+    protected function getStore()
+    {
+        return [
+            'seller_id' => $this->options['SellerId'],
+            'aws_key_id' => $this->options['AWSAccessKeyId'],
+            'secret_key' => $this->secretKey,
+            'mws_auth_token' => $this->mwsAuthToken,
+            'marketplace_id' => $this->marketplaceId,
+            'url' => $this->urlbase,
+        ];
+    }
     // -- End Functions from Amazon --
-
 }
 
 ?>

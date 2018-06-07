@@ -1,6 +1,6 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Properos\AmazonMws;
 
-use Sonnenglas\AmazonMws\AmazonOrderCore;
+use Properos\AmazonMws\AmazonOrderCore;
 
 /**
  * Copyright 2013 CPI Group, LLC
@@ -138,7 +138,7 @@ class AmazonOrder extends AmazonOrderCore
         if (!is_bool($token)) {
             $token = false;
         }
-        $items = new AmazonOrderItemList($this->storeName, $this->data['AmazonOrderId'], $this->mockMode,
+        $items = new AmazonOrderItemList($this->getStore(), $this->data['AmazonOrderId'], $this->mockMode,
             $this->mockFiles, $this->config);
         $items->mockIndex = $this->mockIndex;
         $items->setUseToken($token);

@@ -1,7 +1,7 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php
+namespace Properos\AmazonMws;
 
-use Sonnenglas\AmazonMws\AmazonCore;
-
+use Properos\AmazonMws\AmazonCore;
 /**
  * Copyright 2013 CPI Group, LLC
  *
@@ -28,6 +28,7 @@ use Exception;
  */
 abstract class AmazonProductsCore extends AmazonCore
 {
+
     protected $productList;
     protected $index = 0;
 
@@ -54,9 +55,8 @@ abstract class AmazonProductsCore extends AmazonCore
             $this->options['Version'] = $AMAZON_VERSION_PRODUCTS;
         }
 
-        $store = config('amazon-mws.store');
-        if (isset($store[$s]) && array_key_exists('marketplaceId', $store[$s])) {
-            $this->options['MarketplaceId'] = $store[$s]['marketplaceId'];
+        if ($this->marketplaceId != '') {
+            $this->options['MarketplaceId'] = $this->marketplaceId;
         } else {
             $this->log("Marketplace ID is missing", 'Urgent');
         }
@@ -78,7 +78,6 @@ abstract class AmazonProductsCore extends AmazonCore
         if (!$xml) {
             return false;
         }
-
         foreach ($xml->children() as $x) {
             if ($x->getName() == 'ResponseMetadata') {
                 continue;
@@ -89,14 +88,12 @@ abstract class AmazonProductsCore extends AmazonCore
             }
             if (isset($x->Products)) {
                 foreach ($x->Products->children() as $z) {
-                    $this->productList[$this->index] = new AmazonProduct($this->storeName, $z, $this->mockMode,
-                        $this->mockFiles);
+                    $this->productList[$this->index] = new AmazonProduct($this->getStore(), $z, $this->mockMode, $this->mockFiles);
                     $this->index++;
                 }
             } else {
                 if ($x->getName() == 'GetProductCategoriesForSKUResult' || $x->getName() == 'GetProductCategoriesForASINResult') {
-                    $this->productList[$this->index] = new AmazonProduct($this->storeName, $x, $this->mockMode,
-                        $this->mockFiles);
+                    $this->productList[$this->index] = new AmazonProduct($this->getStore(), $x, $this->mockMode, $this->mockFiles);
                     $this->index++;
                 } else {
                     foreach ($x->children() as $z) {
@@ -108,8 +105,7 @@ abstract class AmazonProductsCore extends AmazonCore
                             $this->productList[$z->getName()] = (string)$z;
                             $this->log("Special case: " . $z->getName(), 'Warning');
                         } else {
-                            $this->productList[$this->index] = new AmazonProduct($this->storeName, $z, $this->mockMode,
-                                $this->mockFiles);
+                            $this->productList[$this->index] = new AmazonProduct($this->getStore(), $z, $this->mockMode, $this->mockFiles);
                             $this->index++;
                         }
                     }
@@ -137,5 +133,3 @@ abstract class AmazonProductsCore extends AmazonCore
         }
     }
 }
-
-?>

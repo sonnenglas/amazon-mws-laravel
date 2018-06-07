@@ -1,6 +1,6 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Properos\AmazonMws;
 
-use Sonnenglas\AmazonMws\AmazonOrderCore;
+use Properos\AmazonMws\AmazonOrderCore;
 
 /**
  * Copyright 2013 CPI Group, LLC
@@ -167,7 +167,7 @@ class AmazonOrderSet extends AmazonOrderCore implements \Iterator
             if ($key != 'Order') {
                 break;
             }
-            $this->orderList[$this->index] = new AmazonOrder($this->storeName, null, $order, $this->mockMode,
+            $this->orderList[$this->index] = new AmazonOrder($this->getStore(), null, $order, $this->mockMode,
                 $this->mockFiles, $this->config);
             $this->orderList[$this->index]->mockIndex = $this->mockIndex;
             $this->index++;
