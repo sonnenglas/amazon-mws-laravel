@@ -1,5 +1,6 @@
 # CHANGELOG
 
+
 ### 2018-11-08 - Version 3.0.5
 
 - [[PR #17](https://github.com/sonnenglas/amazon-mws-laravel/pull/17)] Fix to include relationships including additional ns2 attributes

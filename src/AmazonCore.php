@@ -447,6 +447,10 @@ abstract class AmazonCore
                 $this->options['MWSAuthToken'] = $store[$s]['authToken'];
             }
 
+            if (array_key_exists('marketplaceId', $store[$s]) && !empty($store[$s]['marketplaceId'])) {
+                $this->marketplaceId = $store[$s]['marketplaceId'];
+            }
+
         } else {
             $this->log("Store $s does not exist!", 'Warning');
             throw new Exception("Store $s does not exist!");
