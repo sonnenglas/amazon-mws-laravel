@@ -63,7 +63,7 @@ class AmazonProductInfo extends AmazonProductsCore
         if (is_string($s)) {
             $this->resetASINs();
             $this->resetSKUs();
-            $this->options['SellerSKUList.SellerSKU.1'] = $s;
+            $this->options['SellerSKU'] = $s;
         } else {
             if (is_array($s)) {
                 $this->resetASINs();
@@ -108,7 +108,7 @@ class AmazonProductInfo extends AmazonProductsCore
         if (is_string($s)) {
             $this->resetSKUs();
             $this->resetASINs();
-            $this->options['ASINList.ASIN.1'] = $s;
+            $this->options['ASIN'] = $s;
         } else {
             if (is_array($s)) {
                 $this->resetSKUs();
