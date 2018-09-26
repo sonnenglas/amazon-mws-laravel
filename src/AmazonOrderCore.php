@@ -44,7 +44,7 @@ abstract class AmazonOrderCore extends AmazonCore
         include($this->env);
 
         if (isset($AMAZON_VERSION_ORDERS)) {
-            $this->urlbranch = 'Orders/' . $AMAZON_VERSION_ORDERS;
+            $this->urlbranch = '/Orders/' . $AMAZON_VERSION_ORDERS;
             $this->options['Version'] = $AMAZON_VERSION_ORDERS;
         }
     }
