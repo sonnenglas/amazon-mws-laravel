@@ -7,13 +7,13 @@ Fork for Lumen framework to adjust for how config is loaded up.
 
 A PHP package to connect to Amazon's Merchant Web Services (MWS) in an object-oriented manner, with a focus on intuitive usage.
 
-Currently optimizing for Laravel Framework.
+Currently optimizing for Lumen Framework.
 
 This is __NOT__ for Amazon Web Services (AWS) - Cloud Computing Services.
 
 ## Installation
 
-1. `composer require sonnenglas/laravel5-amazon-mws`
+1. `composer require georanma/lumen-amazon-mws`
 
 2. add the service provider to the providers array in config/app.php:
 ```
@@ -22,7 +22,7 @@ Sonnenglas\AmazonMws\ServiceProvider::class,
 
 There's no facades to add in config/app.php
 
-3. Copy amazon-mws.php configuration file from src/config/amazon-mws.php to Laravel's config directory.
+3. Copy amazon-mws.php configuration file from src/config/amazon-mws.php to Lumen's config directory.
 
 ## Usage
 All of the technical details required by the API are handled behind the scenes,
