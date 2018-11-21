@@ -1,7 +1,7 @@
 amazon-mws-laravel
 ============
 
-##Notes
+## Notes
 Fork for Lumen framework to adjust for how config is loaded up.
 
 
