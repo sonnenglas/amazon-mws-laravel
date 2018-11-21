@@ -1,4 +1,4 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Georanma\AmazonMws;
 
 /**
  * Copyright 2013 CPI Group, LLC

@@ -1,4 +1,4 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Georanma\AmazonMws;
 
 use Config;
 use Iterator;
@@ -58,7 +58,7 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
         //     throw new \Exception('Config file does not exist!');
         // }
 
-        $store = Config::get('amazon-mws.store');
+        $store = config('amazon-mws.store');
 
         if (isset($store[$s]) && array_key_exists('marketplaceId', $store[$s])) {
             $this->options['MarketplaceId.Id.1'] = $store[$s]['marketplaceId'];

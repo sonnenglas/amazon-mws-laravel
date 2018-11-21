@@ -1,4 +1,4 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Georanma\AmazonMws;
 
 use Iterator;
 

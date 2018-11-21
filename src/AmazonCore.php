@@ -1,4 +1,4 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Georanma\AmazonMws;
 
 use Config, Log;
 use DateTime;
@@ -381,7 +381,7 @@ abstract class AmazonCore
 
     public function setConfig()
     {
-        $AMAZON_SERVICE_URL = Config::get('amazon-mws.AMAZON_SERVICE_URL');
+        $AMAZON_SERVICE_URL = config('amazon-mws.AMAZON_SERVICE_URL');
 
         if (isset($AMAZON_SERVICE_URL)) {
             $this->urlbase = $AMAZON_SERVICE_URL;
@@ -409,7 +409,7 @@ abstract class AmazonCore
         //     throw new \Exception("Config file does not exist!");
         // }
 
-        $store = Config::get('amazon-mws.store');
+        $store = config('amazon-mws.store');
 
         if (array_key_exists($s, $store)) {
             $this->storeName = $s;
@@ -479,7 +479,7 @@ abstract class AmazonCore
         if ($msg != false) {
             $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
-            $muteLog = Config::get('amazon-mws.muteLog');
+            $muteLog = config('amazon-mws.muteLog');
             if (isset($muteLog) && $muteLog == true) {
                 return;
             }
@@ -590,7 +590,7 @@ abstract class AmazonCore
         //     throw new Exception("Config file does not exist!");
         // }
 
-        $store = Config::get('amazon-mws.store');
+        $store = config('amazon-mws.store');
 
         if (array_key_exists($this->storeName, $store) && array_key_exists('secretKey', $store[$this->storeName])) {
             $secretKey = $store[$this->storeName]['secretKey'];

@@ -1,6 +1,6 @@
-<?php namespace Sonnenglas\AmazonMws;
+<?php namespace Georanma\AmazonMws;
 
-use Sonnenglas\AmazonMws\AmazonFeedsCore;
+use Georanma\AmazonMws\AmazonFeedsCore;
 
 /**
  * Copyright 2013 CPI Group, LLC

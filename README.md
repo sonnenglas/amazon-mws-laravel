@@ -1,6 +1,10 @@
 amazon-mws-laravel
 ============
 
+##Notes
+Fork for Lumen framework to adjust for how config is loaded up.
+
+
 A PHP package to connect to Amazon's Merchant Web Services (MWS) in an object-oriented manner, with a focus on intuitive usage.
 
 Currently optimizing for Laravel Framework.

@@ -1,13 +1,17 @@
 {
-    "name": "sonnenglas/laravel5-amazon-mws",
-    "description": "Use Amazon's MWS web services with Laravel 5.x. Based on creacoon/amazon-mws-laravel package and modified to make it compatible with latest Laravel releases (+ bugfixes).",
+    "name": "georanma/laravel5-amazon-mws",
+    "description": "Use Amazon's MWS web services with Lumen 5.x. Based on sonnenglas/amazon-mws-laravel package and modified to make it compatible with latest lumen releases (+ bugfixes).",
     "license": "Apache-2.0",
-    "keywords": ["API", "Amazon", "PHP", "MWS", "Laravel"],
+    "keywords": ["API", "Amazon", "PHP", "MWS", "Laravel","Lumen"],
     "authors": [
         {
-            "name": "Przemek Peron",
-            "email": "przemek@redkorn.pl"
-        }
+            "name": "George Birnbaum",
+            "email": "georanma@gmail.com"
+        },
+        {
+            "name": "Haris Masood",
+            "email": "haris@nanowebgroup.com"
+        },
     ],
     "require": {
         "php": ">=5.5.9",
@@ -19,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Sonnenglas\\AmazonMws\\": "src"
+            "Georanma\\AmazonMws\\": "src"
         }
     },
     "minimum-stability": "stable"
