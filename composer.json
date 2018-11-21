@@ -11,7 +11,7 @@
         {
             "name": "Haris Masood",
             "email": "haris@nanowebgroup.com"
-        },
+        }
     ],
     "require": {
         "php": ">=5.5.9",
