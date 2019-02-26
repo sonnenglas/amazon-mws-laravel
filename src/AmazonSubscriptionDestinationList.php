@@ -48,7 +48,7 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
      * @throws \Exception
      */
     public function __construct($s, $mock = false, $m = null)
-    {
+    {dd($s);
         parent::__construct($s, $mock, $m);
         include($this->env);
 
@@ -86,6 +86,7 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
+            dd($url, $query);
             $response = $this->sendRequest($url, ['Post' => $query]);
 
             if (!$this->checkResponse($response)) {
