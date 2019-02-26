@@ -48,29 +48,9 @@ abstract class AmazonSubscriptionCore extends AmazonCore
         parent::__construct($s, $mock, $m);
         include($this->env);
 
-        if (file_exists($this->config)) {
-            include($this->config);
-        } else {
-            throw new \Exception('Config file does not exist!');
-        }
-
         if (isset($AMAZON_VERSION_SUBSCRIBE)) {
             $this->urlbranch = 'Subscriptions/' . $AMAZON_VERSION_SUBSCRIBE;
             $this->options[ 'Version' ] = $AMAZON_VERSION_SUBSCRIBE;
-        }
-
-        if (isset($THROTTLE_LIMIT_SUBSCRIBE)) {
-            $this->throttleLimit = $THROTTLE_LIMIT_SUBSCRIBE;
-        }
-        if (isset($THROTTLE_TIME_SUBSCRIBE)) {
-            $this->throttleTime = $THROTTLE_TIME_SUBSCRIBE;
-        }
-
-        $store = config('amazon-mws.store');
-        if (isset($store[ $this->storeName ][ 'marketplaceId' ])) {
-            $this->setMarketplace($store[ $this->storeName ][ 'marketplaceId' ]);
-        } else {
-            $this->log("Marketplace ID is missing", 'Urgent');
         }
     }
 

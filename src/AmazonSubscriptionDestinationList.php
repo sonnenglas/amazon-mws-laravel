@@ -52,11 +52,11 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
         parent::__construct($s, $mock, $m);
         include($this->env);
 
-        if (isset($THROTTLE_LIMIT_REPORTSCHEDULE)) {
-            $this->throttleLimit = $THROTTLE_LIMIT_REPORTSCHEDULE;
+        if (isset($THROTTLE_LIMIT_SUBSCRIBE)) {
+            $this->throttleLimit = $THROTTLE_LIMIT_SUBSCRIBE;
         }
-        if (isset($THROTTLE_TIME_REPORTSCHEDULE)) {
-            $this->throttleTime = $THROTTLE_TIME_REPORTSCHEDULE;
+        if (isset($THROTTLE_TIME_SUBSCRIBE)) {
+            $this->throttleTime = $THROTTLE_TIME_SUBSCRIBE;
         }
     }
 
