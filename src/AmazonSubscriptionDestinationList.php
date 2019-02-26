@@ -34,6 +34,33 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
     protected $i = 0;
 
     /**
+     * AmazonSubscriptionDestinationList sets a list of subscription destinations.
+     *
+     * The parameters are passed to the parent constructor, which are
+     * in turn passed to the AmazonCore constructor. See it for more information
+     * on these parameters and common methods.
+     *
+     * @param string       $s    <p>Name for the store you want to use.</p>
+     * @param boolean      $mock [optional] <p>This is a flag for enabling Mock Mode.
+     *                           This defaults to <b>FALSE</b>.</p>
+     * @param array|string $m    [optional] <p>The files (or file) to use in Mock Mode.</p>
+     *
+     * @throws \Exception
+     */
+    public function __construct($s, $mock = false, $m = null)
+    {
+        parent::__construct($s, $mock, $m);
+        include($this->env);
+
+        if (isset($THROTTLE_LIMIT_REPORTSCHEDULE)) {
+            $this->throttleLimit = $THROTTLE_LIMIT_REPORTSCHEDULE;
+        }
+        if (isset($THROTTLE_TIME_REPORTSCHEDULE)) {
+            $this->throttleTime = $THROTTLE_TIME_REPORTSCHEDULE;
+        }
+    }
+
+    /**
      * Fetches a list of registered subscription destinations from Amazon.
      *
      * Submits a <i>ListRegisteredDestinations</i> request to Amazon. Amazon will send
