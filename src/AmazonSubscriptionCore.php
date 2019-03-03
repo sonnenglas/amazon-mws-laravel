@@ -52,6 +52,8 @@ abstract class AmazonSubscriptionCore extends AmazonCore
             $this->urlbranch = 'Subscriptions/' . $AMAZON_VERSION_SUBSCRIBE;
             $this->options[ 'Version' ] = $AMAZON_VERSION_SUBSCRIBE;
         }
+
+        $this->options[ 'MarketplaceId' ] = $this->marketplaceId;
     }
 
     /**

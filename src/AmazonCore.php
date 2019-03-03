@@ -451,7 +451,7 @@ abstract class AmazonCore
             if (array_key_exists('marketplaceId', $store[ $s ]) && !empty($store[ $s ][ 'marketplaceId' ])) {
                 $this->marketplaceId = $store[ $s ][ 'marketplaceId' ];
             }
-            
+
         } else {
             throw new \Exception("Store $s does not exist!");
             $this->log("Store $s does not exist!", 'Warning');

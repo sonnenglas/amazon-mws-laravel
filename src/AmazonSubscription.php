@@ -170,6 +170,7 @@ class AmazonSubscription extends AmazonSubscriptionCore
         $query = $this->genQuery();
 
         $path = $this->options[ 'Action' ] . 'Result';
+
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {

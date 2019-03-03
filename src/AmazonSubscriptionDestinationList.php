@@ -48,7 +48,7 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
      * @throws \Exception
      */
     public function __construct($s, $mock = false, $m = null)
-    {dd($s);
+    {
         parent::__construct($s, $mock, $m);
         include($this->env);
 
@@ -58,6 +58,8 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
         if (isset($THROTTLE_TIME_SUBSCRIBE)) {
             $this->throttleTime = $THROTTLE_TIME_SUBSCRIBE;
         }
+
+        $this->options[ 'Action' ] = 'ListRegisteredDestinations';
     }
 
     /**
@@ -76,8 +78,6 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
             return false;
         }
 
-        $this->options[ 'Action' ] = 'ListRegisteredDestinations';
-
         $url = $this->urlbase . $this->urlbranch;
 
         $query = $this->genQuery();
@@ -86,7 +86,6 @@ class AmazonSubscriptionDestinationList extends AmazonSubscriptionCore implement
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            dd($url, $query);
             $response = $this->sendRequest($url, ['Post' => $query]);
 
             if (!$this->checkResponse($response)) {
