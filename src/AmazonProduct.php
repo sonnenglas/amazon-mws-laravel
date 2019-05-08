@@ -140,17 +140,24 @@ class AmazonProduct extends AmazonProductsCore
 
         //Relationships
         if ($xml->Relationships) {
-            foreach ($xml->Relationships->children() as $x) {
+            $i = 0;
+            foreach ($xml->Relationships->children('ns2', true) as $x) {
+
+                foreach ($x->children('ns2', true) as $y) {
+                    $this->data['Relationships'][$i][$y->getName()] = (string)$y;
+                }
                 foreach ($x->children() as $y) {
                     foreach ($y->children() as $z) {
+
                         foreach ($z->children() as $zzz) {
-                            $this->data['Relationships'][$x->getName()][$y->getName()][$z->getName()][$zzz->getName()] = (string)$zzz;
+                            $this->data['Relationships'][$i][$zzz->getName()] = (string)$zzz;
                         }
                     }
                 }
+                $i++;
             }
         }
-
+        
         //CompetitivePricing
         if ($xml->CompetitivePricing) {
             //CompetitivePrices

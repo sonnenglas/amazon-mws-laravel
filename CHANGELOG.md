@@ -1,5 +1,12 @@
 # CHANGELOG
 
+### 2018-11-08 - Version 3.0.5
+
+- [[PR #17](https://github.com/sonnenglas/amazon-mws-laravel/pull/17)] Fix to include relationships including additional ns2 attributes
+- [[PR #16](https://github.com/sonnenglas/amazon-mws-laravel/pull/16)] Fixed timestamp format to truly follow ISO8601
+- [[PR #13](https://github.com/sonnenglas/amazon-mws-laravel/pull/13)] Fix ineffective muteLog config setting
+- [[PR #9](https://github.com/sonnenglas/amazon-mws-laravel/pull/9)] added proxy support and some fixes
+
 ### 2018-07-25 - Version 3.0.4
 
 - added `setMarketPlaceId()` to AmazonFulfillmentOrderCreator class

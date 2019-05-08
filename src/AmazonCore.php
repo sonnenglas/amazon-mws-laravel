@@ -113,6 +113,7 @@ abstract class AmazonCore
     protected $env;
     protected $marketplaceId;
     protected $rawResponses = array();
+    protected $proxyInfo = [];
 
     /**
      * AmazonCore constructor sets up key information used in all Amazon requests.
@@ -371,7 +372,7 @@ abstract class AmazonCore
 
     // *
     //  * Set the config file.
-    //  * 
+    //  *
     //  * This method can be used to change the config file after the object has
     //  * been initiated. The file will not be set if it cannot be found or read.
     //  * This is useful for testing, in cases where you want to use a different file.
@@ -430,6 +431,9 @@ abstract class AmazonCore
                 $AMAZON_SERVICE_URL = $store[$s]['amazonServiceUrl'];
                 $this->urlbase = $AMAZON_SERVICE_URL;
             }
+            if (array_key_exists('proxyInfo', $store[$s])) {
+                $this->proxyInfo = $store[$s]['proxyInfo'];
+            }
 
             if (array_key_exists('authToken', $store[$s]) && !empty($store[$s]['authToken'])) {
                 $this->options['MWSAuthToken'] = $store[$s]['authToken'];
@@ -476,6 +480,9 @@ abstract class AmazonCore
             $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
 
             $muteLog = Config::get('amazon-mws.muteLog');
+            if (isset($muteLog) && $muteLog == true) {
+                return;
+            }
 
             switch ($level) {
                 case('Info'):
@@ -493,11 +500,8 @@ abstract class AmazonCore
                 default:
                     $loglevel = 'info';
             }
-            call_user_func(array('Log', $loglevel), $msg);
 
-            if (isset($muteLog) && $muteLog == true) {
-                return;
-            }
+            call_user_func(array('Log', $loglevel), $msg);
 
             if (isset($userName) && $userName != '') {
                 $name = $userName;
@@ -558,11 +562,14 @@ abstract class AmazonCore
     {
         if (!$time) {
             $time = time();
-        } else {
+        } else if (is_numeric($time)) {
+            $time = (int)$time;
+        } else if (is_string($time)) {
             $time = strtotime($time);
-
+        } else {
+            throw new Exception('Invalid time input given');
         }
-        return date(DateTime::ISO8601, $time - 30);
+        return date('c', $time-120);
 
     }
 
@@ -610,6 +617,10 @@ abstract class AmazonCore
         $this->log("Making request to Amazon: " . $this->options['Action']);
         $response = $this->fetchURL($url, $param);
 
+        if (!isset($response['code'])) {
+            $this->log("Unrecognized response: ".print_r($response, true));
+            return null;
+        }
         while ($response['code'] == '503' && $this->throttleStop == false) {
             $this->sleep();
             $response = $this->fetchURL($url, $param);
@@ -720,6 +731,19 @@ abstract class AmazonCore
             if (!empty($param['Post'])) {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $param['Post']);
             }
+        }
+
+        if (!empty($this->proxyInfo)
+            && !empty($this->proxyInfo['ip'])
+            && !empty($this->proxyInfo['port'])
+        ) {
+            curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxyInfo['ip']);
+            curl_setopt($ch, CURLOPT_PROXYPORT, $this->proxyInfo['port']);
+            if (!empty($this->proxyInfo['user_pwd'])) {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyInfo['user_pwd']);
+            }
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
         }
 
         $data = curl_exec($ch);
