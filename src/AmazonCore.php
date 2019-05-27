@@ -440,7 +440,9 @@ abstract class AmazonCore
             }
 
             if (array_key_exists('marketplaceId', $store[$s]) && !empty($store[$s]['marketplaceId'])) {
-                $this->marketplaceId = $store[$s]['marketplaceId'];
+                // Set default to use first marketplace id in array, this will be used for Create Fulfillment Order.
+                // Actually marketplace could be any.
+                $this->marketplaceId = $store[$s]['marketplaceId'][0];
             }
 
         } else {
