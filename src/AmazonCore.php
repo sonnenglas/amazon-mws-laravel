@@ -1,6 +1,7 @@
 <?php namespace Sonnenglas\AmazonMws;
 
-use Config, Log;
+use Illuminate\Support\Facades\Config;
+use Log;
 use DateTime;
 use Exception;
 
