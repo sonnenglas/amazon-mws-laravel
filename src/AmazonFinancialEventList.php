@@ -410,6 +410,7 @@ class AmazonFinancialEventList extends AmazonFinanceCore {
                 $temp['AdjustmentType'] = (string)$x->AdjustmentType;
                 $temp['Amount'] = (string)$x->AdjustmentAmount->CurrencyAmount;
                 $temp['CurrencyCode'] = (string)$x->AdjustmentAmount->CurrencyCode;
+                $temp['PostedDate'] = (string)$x->PostedDate;
                 if (isset($x->AdjustmentItemList)) {
                     foreach($x->AdjustmentItemList->children() as $z) {
                         $ztemp = array();
@@ -982,6 +983,7 @@ class AmazonFinancialEventList extends AmazonFinanceCore {
      * <li><b>ProductDescription</b></li>
      * <li><b>ASIN</b></li>
      * </ul>
+     * * <li><b>PostedDate</b> - dateTime format converted to string</li>
      * </ul>
      * @return array|boolean multi-dimensional array, or <b>FALSE</b> if list not filled yet
      */
