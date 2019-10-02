@@ -27,7 +27,7 @@ use Sonnenglas\AmazonMws\AmazonProductsCore;
  */
 class AmazonProduct extends AmazonProductsCore
 {
-    protected $data;
+    public $data;
 
     /**
      * AmazonProduct acts as a container for various results from other classes.
@@ -158,6 +158,7 @@ class AmazonProduct extends AmazonProductsCore
             }
         }
         
+
         //CompetitivePricing
         if ($xml->CompetitivePricing) {
             //CompetitivePrices
