@@ -435,8 +435,8 @@ abstract class AmazonCore
                 $this->proxyInfo = $store[$s]['proxyInfo'];
             }
 
-            if (array_key_exists('authToken', $store[$s]) && !empty($store[$s]['authToken'])) {
-                $this->options['MWSAuthToken'] = $store[$s]['authToken'];
+            if (array_key_exists('MWSAuthToken', $store[$s]) && !empty($store[$s]['MWSAuthToken'])) {
+                $this->options['MWSAuthToken'] = $store[$s]['MWSAuthToken'];
             }
 
             if (array_key_exists('marketplaceId', $store[$s]) && !empty($store[$s]['marketplaceId'])) {
@@ -500,8 +500,8 @@ abstract class AmazonCore
                 default:
                     $loglevel = 'info';
             }
-
             call_user_func(array('Log', $loglevel), $msg);
+
 
             if (isset($userName) && $userName != '') {
                 $name = $userName;
@@ -745,7 +745,6 @@ abstract class AmazonCore
             }
             curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
         }
-
         $data = curl_exec($ch);
         if (curl_errno($ch)) {
             $return['ok'] = -1;
