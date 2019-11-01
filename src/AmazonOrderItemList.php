@@ -210,6 +210,9 @@ class AmazonOrderItemList extends AmazonOrderCore implements Iterator
             $this->itemList[$n]['OrderItemId'] = (string)$item->OrderItemId;
             $this->itemList[$n]['Title'] = (string)$item->Title;
             $this->itemList[$n]['QuantityOrdered'] = (string)$item->QuantityOrdered;
+            if (isset($item->ProductInfo)) {
+                $this->itemList[$n]['ProductInfo']['NumberOfItems'] = (string)$item->ProductInfo->NumberOfItems;
+            }
             if (isset($item->QuantityShipped)) {
                 $this->itemList[$n]['QuantityShipped'] = (string)$item->QuantityShipped;
             }
@@ -430,6 +433,22 @@ class AmazonOrderItemList extends AmazonOrderCore implements Iterator
     {
         if (isset($this->itemList[$i]['QuantityOrdered'])) {
             return $this->itemList[$i]['QuantityOrdered'];
+        } else {
+            return false;
+        }
+    }
+
+     /**
+     * Returns the Product information
+     *
+     * This method will return <b>FALSE</b> if the list has not yet been filled.
+     * @param int $i [optional] <p>List index to retrieve the value from. Defaults to 0.</p>
+     * @return array|boolean single value, or <b>FALSE</b> if Non-numeric index
+     */
+    public function getProductInfo($i = 0)
+    {
+        if (isset($this->itemList[$i]['ProductInfo'])) {
+            return $this->itemList[$i]['ProductInfo'];
         } else {
             return false;
         }
