@@ -226,8 +226,7 @@ class AmazonInventoryList extends AmazonInventoryCore implements \Iterator
     {
         if ($this->tokenFlag && $this->tokenUseFlag) {
             $this->options['Action'] = 'ListInventorySupplyByNextToken';
-            unset($this->options['QueryStartDateTime']);
-            unset($this->options['ResponseGroup']);
+            unset($this->options['QueryStartDateTime']);;
             $this->resetSkus();
         } else {
             $this->options['Action'] = 'ListInventorySupply';
