@@ -14,9 +14,9 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=7.2",
         "ext-curl": "*",
-        "illuminate/support": "5.*"
+        "illuminate/support": "^7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "5.*"

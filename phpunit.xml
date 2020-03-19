@@ -4,10 +4,8 @@
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true"
         colors="true"
-        strict="false"
         processIsolation="false"
         stopOnFailure="true"
-        syntaxCheck="true"
         backupGlobals="false"
         bootstrap="tests/bootstrap.php"
         verbose="true">
