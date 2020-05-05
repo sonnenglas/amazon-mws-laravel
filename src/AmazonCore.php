@@ -112,7 +112,7 @@ abstract class AmazonCore
     protected $mockIndex = 0;
     protected $env;
     protected $marketplaceId;
-    protected $rawResponses = array();
+    public $rawResponses = array();
     protected $proxyInfo = [];
 
     /**
