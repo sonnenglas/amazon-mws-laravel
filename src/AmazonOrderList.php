@@ -58,7 +58,13 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
         //     throw new \Exception('Config file does not exist!');
         // }
 
-        $store = Config::get('amazon-mws.store');
+        try{
+            $store = Config::get('amazon-mws.store');
+        }catch (\Error $error){
+            if($error->getMessage() === self::SDK_CONFIG_ERROR_MESSAGE){
+                $store = $_ENV['amazon-mws.store'];
+            }
+        }
 
         if (isset($store[$s]) && array_key_exists('marketplaceId', $store[$s])) {
             $this->options['MarketplaceId.Id.1'] = $store[$s]['marketplaceId'];
