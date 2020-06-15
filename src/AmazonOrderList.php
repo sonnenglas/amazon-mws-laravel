@@ -71,11 +71,11 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
             //The request will have a list of Marketplaces as:
             //MarketplaceId.Id.x1 MarketplaceId.Id.x2 MarketplaceId.Id.x3
             if (is_array($store[$s]['marketplaceId'])) {
-                $count_marketplace = count($store[$s]['marketplaceId']);
-                for ($i = 0; $i < $count_marketplace; ++$i) {
-                    $parameter_increment = $i + 1;
-                    $marketplace_parameter = 'MarketplaceId.Id.' . $parameter_increment;
-                    $this->options[$marketplace_parameter] = $store[$s]['marketplaceId'][$i];
+                $parameterIncrement = 1;
+                foreach ($store[$s]['marketplaceId'] as $marketplace) {
+                    $marketplaceParameter = 'MarketplaceId.Id.' . $parameterIncrement;
+                    $this->options[$marketplaceParameter] = $marketplace;
+                    $parameterIncrement += 1;
                 }
             } else {
                 $this->options['MarketplaceId.Id.1'] = $store[$s]['marketplaceId'];

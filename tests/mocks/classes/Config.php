@@ -7,11 +7,11 @@
 
 class Config
 {
-    const MARKETPLACE_1 = 'A1PA6795UKMFR9';
-    const MARKETPLACE_2 = 'APJ6JRA9NG5V4';
-    const MARKETPLACE_3 = 'A13V1IB3VIYZZH';
-    const MARKETPLACE_4 = 'A1RKKUPIHCS9HS';
-    const MARKETPLACE_5 = 'A1F83G8C2ARO7P';
+    const MARKETPLACE_DE = 'A1PA6795UKMFR9';
+    const MARKETPLACE_IT = 'APJ6JRA9NG5V4';
+    const MARKETPLACE_FR = 'A13V1IB3VIYZZH';
+    const MARKETPLACE_ES = 'A1RKKUPIHCS9HS';
+    const MARKETPLACE_GB = 'A1F83G8C2ARO7P';
 
     static function get($name)
     {
@@ -23,11 +23,11 @@ class Config
                     'merchantId' => 'ABC_MARKET_1234',
                     //'marketplaceId' => 'ABC3456789456',
                     'marketplaceId' => [
-                        self::MARKETPLACE_1,
-                        self::MARKETPLACE_2,
-                        self::MARKETPLACE_3,
-                        self::MARKETPLACE_4,
-                        self::MARKETPLACE_5
+                        self::MARKETPLACE_DE,
+                        self::MARKETPLACE_IT,
+                        self::MARKETPLACE_FR,
+                        self::MARKETPLACE_ES,
+                        self::MARKETPLACE_GB
                     ],
                     'keyId' => 'key',
                     'secretkey' => 'secret',
