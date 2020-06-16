@@ -67,7 +67,19 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator
         }
 
         if (isset($store[$s]) && array_key_exists('marketplaceId', $store[$s])) {
-            $this->options['MarketplaceId.Id.1'] = $store[$s]['marketplaceId'];
+            //Make possible to pass multiple MarketplaceIds
+            //The request will have a list of Marketplaces as:
+            //MarketplaceId.Id.x1 MarketplaceId.Id.x2 MarketplaceId.Id.x3
+            if (is_array($store[$s]['marketplaceId'])) {
+                $parameterIncrement = 1;
+                foreach ($store[$s]['marketplaceId'] as $marketplace) {
+                    $marketplaceParameter = 'MarketplaceId.Id.' . $parameterIncrement;
+                    $this->options[$marketplaceParameter] = $marketplace;
+                    $parameterIncrement += 1;
+                }
+            } else {
+                $this->options['MarketplaceId.Id.1'] = $store[$s]['marketplaceId'];
+            }
         } else {
             $this->log("Marketplace ID is missing", 'Urgent');
         }
