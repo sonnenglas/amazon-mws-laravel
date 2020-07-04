@@ -1,6 +1,6 @@
 {
-    "name": "sonnenglas/laravel5-amazon-mws",
-    "description": "Use Amazon's MWS web services with Laravel 5.x. Based on creacoon/amazon-mws-laravel package and modified to make it compatible with latest Laravel releases (+ bugfixes).",
+    "name": "sonnenglas/laravel-amazon-mws",
+    "description": "Use Amazon's MWS web services with Laravel ^7.x. Based on creacoon/amazon-mws-laravel package and modified to make it compatible with latest Laravel releases (+ bugfixes).",
     "license": "Apache-2.0",
     "keywords": ["API", "Amazon", "PHP", "MWS", "Laravel"],
     "authors": [
@@ -12,7 +12,7 @@
     "require": {
         "php": ">=5.5.9",
         "ext-curl": "*",
-        "illuminate/support": "5.*"
+        "illuminate/support": "^6.0"
     },
     "require-dev": {
         "phpunit/phpunit": "5.*"
