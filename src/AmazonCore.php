@@ -707,6 +707,23 @@ abstract class AmazonCore
         sleep($this->throttleTime);
     }
 
+
+    /**
+     * Set the sleep time in seconds when the request get throttled and rejected
+     * The request will be replayed after a specified period of time
+     * @param int $time <b>Time to sleep in seconds</b>
+     */
+    public function setThrottleTime($time)
+    {
+        if (!empty($time) && is_int($time)) {
+            $this->throttleTime = $time;
+        } else {
+            flush();
+            $this->log("Invalid time, throttle time will be set to 1 sec.", 'Throttle');
+            $this->throttleTime = 1;
+        }
+    }
+
     /**
      * Checks for a token and changes the proper options
      * @param SimpleXMLObject $xml <p>response data</p>
