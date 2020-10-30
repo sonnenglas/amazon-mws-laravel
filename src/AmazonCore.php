@@ -1,7 +1,6 @@
 <?php namespace Sonnenglas\AmazonMws;
 
-use Config, Log;
-use DateTime;
+use Config;
 use Exception;
 
 
@@ -104,6 +103,7 @@ abstract class AmazonCore
     protected $throttleSafe;
     protected $throttleGroup;
     protected $throttleStop = false;
+    protected $throttleCount = 0;
     protected $storeName;
     protected $options;
     protected $config;
@@ -243,7 +243,7 @@ abstract class AmazonCore
                     $return = file_get_contents($url);
                 }
                 return $return;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->log("Error when opening Mock File: $url - " . $e->getMessage(), 'Warning');
                 return false;
             }
@@ -453,8 +453,8 @@ abstract class AmazonCore
             }
 
         } else {
-            throw new \Exception("Store $s does not exist!");
             $this->log("Store $s does not exist!", 'Warning');
+            throw new Exception("Store $s does not exist!");
         }
     }
 
@@ -493,7 +493,7 @@ abstract class AmazonCore
 
             $muteLog = Config::get('amazon-mws.muteLog');
             if (isset($muteLog) && $muteLog == true) {
-                return;
+                return false;
             }
 
             switch ($level) {
@@ -634,14 +634,16 @@ abstract class AmazonCore
      */
     protected function sendRequest($url, $param)
     {
-        $this->log("Making request to Amazon: " . $this->options[ 'Action' ]);
+        $this->log("Making request to Amazon: " . $this->options['Action']);
+        $this->throttleCount = 0;
         $response = $this->fetchURL($url, $param);
 
         if (!isset($response[ 'code' ])) {
             $this->log("Unrecognized response: " . print_r($response, true));
             return null;
         }
-        while ($response[ 'code' ] == '503' && $this->throttleStop == false) {
+        while ($response['code'] == '503' && $this->throttleStop == false) {
+            ++$this->throttleCount;
             $this->sleep();
             $response = $this->fetchURL($url, $param);
         }
@@ -663,34 +665,41 @@ abstract class AmazonCore
      * </ul>
      *
      * @param int $i [optional] <p>If set, retrieves the specific response instead of the last one.
-     *               If the index for the response is not used, <b>FALSE</b> will be returned.</p>
-     *
-     * @return array associative array of HTTP response or <b>FALSE</b> if not set yet
+     * If the index for the response is not used, <b>FALSE</b> will be returned.</p>
+     * @return array|boolean associative array of HTTP response or <b>FALSE</b> if not set yet
      */
     public function getLastResponse($i = null)
     {
         if (!isset($i)) {
             $i = count($this->rawResponses) - 1;
         }
-        if ($i >= 0 && isset($this->rawResponses[ $i ])) {
-            return $this->rawResponses[ $i ];
-        } else {
-            return false;
+        if ($i >= 0 && isset($this->rawResponses[$i])) {
+            return $this->rawResponses[$i];
         }
+        return false;
     }
 
     /**
      * Gives all response code received from Amazon.
-     * @return array list of associative arrays of HTTP response or <b>FALSE</b> if not set yet
+     * @return array|boolean list of associative arrays of HTTP response or <b>FALSE</b> if not set yet
      * @see getLastResponse
      */
     public function getRawResponses()
     {
         if (!empty($this->rawResponses)) {
             return $this->rawResponses;
-        } else {
-            return false;
         }
+        return false;
+    }
+
+    /**
+     * Gives the number of times the last call to sendRequest was throttled
+     * @return int
+     * @see sendRequest
+     */
+    public function getThrottleCountForLastRequest()
+    {
+        return $this->throttleCount;
     }
 
     /**
@@ -792,14 +801,16 @@ abstract class AmazonCore
             $return[ 'body' ] = null;
         }
 
-        $matches = [];
-        $data = preg_match("/HTTP\/[0-9.]+ ([0-9]+) (.+)\r\n/", $return[ 'head' ], $matches);
+        $matches = array();
+        preg_match("/HTTP\/[0-9.]+ ([0-9]+) (.+)\r\n/", $return['head'], $matches);
+        $return['code'] = '';
+        $return['answer'] = '';
         if (!empty($matches)) {
             $return[ 'code' ] = $matches[ 1 ];
             $return[ 'answer' ] = $matches[ 2 ];
         }
 
-        $data = preg_match("/meta http-equiv=.refresh. +content=.[0-9]*;url=([^'\"]*)/i", $return[ 'body' ], $matches);
+        preg_match("/meta http-equiv=.refresh. +content=.[0-9]*;url=([^'\"]*)/i", $return['body'], $matches);
         if (!empty($matches)) {
             $return[ 'location' ] = $matches[ 1 ];
             $return[ 'code' ] = '301';
@@ -837,7 +848,6 @@ abstract class AmazonCore
     protected function _urlencode($value)
     {
         return rawurlencode($value);
-        return str_replace('%7E', '~', rawurlencode($value));
     }
 
     /**
@@ -882,8 +892,7 @@ abstract class AmazonCore
      * generates the string to sign, copied from Amazon
      *
      * @param array $parameters
-     *
-     * @return type
+     * @return string
      */
     protected function _calculateStringToSignV2(array $parameters)
     {

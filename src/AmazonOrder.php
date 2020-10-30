@@ -176,8 +176,12 @@ class AmazonOrder extends AmazonOrderCore
         if (isset($xml->ShipServiceLevel)) {
             $d['ShipServiceLevel'] = (string)$xml->ShipServiceLevel;
         }
+        if (isset($xml->TaxRegistrationDetails) && isset($xml->TaxRegistrationDetails->member)) {
+            $d['TaxRegistrationDetails']['taxRegistrationId'] = (string)$xml->TaxRegistrationDetails->member->taxRegistrationId;
+            $d['TaxRegistrationDetails']['taxRegistrationCountry'] = (string)$xml->TaxRegistrationDetails->member->taxRegistrationAuthority->country;
+            $d['TaxRegistrationDetails']['taxRegistrationType'] = (string)$xml->TaxRegistrationDetails->member->taxRegistrationType;
+        }
         if (isset($xml->ShippingAddress)) {
-            $d['ShippingAddress'] = array();
             $d['ShippingAddress']['Name'] = (string)$xml->ShippingAddress->Name;
             $d['ShippingAddress']['AddressLine1'] = (string)$xml->ShippingAddress->AddressLine1;
             $d['ShippingAddress']['AddressLine2'] = (string)$xml->ShippingAddress->AddressLine2;
@@ -886,6 +890,36 @@ class AmazonOrder extends AmazonOrderCore
         } else {
             return false;
         }
+    }
+
+    public function getTaxRegistrationDetails()
+    {
+        if (isset($this->data['TaxRegistrationDetails'])){
+            return $this->data['TaxRegistrationDetails'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This method returns tax registration id (which is usually VAT ID for Europe)
+     *
+     * @return false|mixed
+     */
+    public function getTaxRegistrationId()
+    {
+        if (!empty($this->data['TaxRegistrationDetails']['taxRegistrationId'])) {
+            return $this->data['TaxRegistrationDetails']['taxRegistrationId'];
+        }
+        return false;
+    }
+
+    public function isVatRegistered()
+    {
+        if (!empty($this->data['TaxRegistrationDetails']['taxRegistrationType'])) {
+            return ($this->data['TaxRegistrationDetails']['taxRegistrationType'] == 'VAT');
+        }
+        return false;
     }
 }
 
