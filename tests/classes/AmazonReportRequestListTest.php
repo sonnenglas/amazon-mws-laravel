@@ -385,7 +385,7 @@ class AmazonReportRequestListTest extends PHPUnit_Framework_TestCase {
         $x1['ReportProcessingStatus'] = '_DONE_';
         $x1['GeneratedReportId'] = '3538561173';
         $x1['StartedProcessingDate'] = '2011-02-17T23:44:43+00:00';
-        $x1['CompletedProcessingDate'] = '2011-02-17T23:44:48+00:00';
+        $x1['CompletedDate'] = '2011-02-17T23:44:48+00:00';
         $x[0] = $x1;
         
         $this->assertEquals($x,$o->getList());
