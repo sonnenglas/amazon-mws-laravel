@@ -140,21 +140,37 @@ class AmazonProduct extends AmazonProductsCore
 
         //Relationships
         if ($xml->Relationships) {
-            $i = 0;
-            foreach ($xml->Relationships->children('ns2', true) as $x) {
-
-                foreach ($x->children('ns2', true) as $y) {
-                    $this->data['Relationships'][$i][$y->getName()] = (string)$y;
-                }
-                foreach ($x->children() as $y) {
-                    foreach ($y->children() as $z) {
-
-                        foreach ($z->children() as $zzz) {
-                            $this->data['Relationships'][$i][$zzz->getName()] = (string)$zzz;
+            //If returned product XML belongs to a simple listing, or a single variation.
+            //Use Defulat XML children function
+            if ($xml->Relationships->children()) {
+                foreach ($xml->Relationships->children() as $x) {
+                    foreach ($x->children() as $y) {
+                        foreach ($y->children() as $z) {
+                            foreach ($z->children() as $zzz) {
+                                $this->data['Relationships'][$x->getName()][$y->getName()][$z->getName()][$zzz->getName()] = (string)$zzz;
+                            }
                         }
                     }
                 }
-                $i++;
+            }
+            else {
+                //If returned product XML belongs to a parent listing, relationship are formatted differently using ns2
+                $i = 0;
+                foreach ($xml->Relationships->children('ns2', true) as $x) {
+
+                    foreach ($x->children('ns2', true) as $y) {
+                        $this->data['Relationships'][$i][$y->getName()] = (string)$y;
+                    }
+                    foreach ($x->children() as $y) {
+                        foreach ($y->children() as $z) {
+
+                            foreach ($z->children() as $zzz) {
+                                $this->data['Relationships'][$i][$zzz->getName()] = (string)$zzz;
+                            }
+                        }
+                    }
+                    $i++;
+                }
             }
         }
         
