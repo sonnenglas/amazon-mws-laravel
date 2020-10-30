@@ -435,6 +435,8 @@ class AmazonProductInfo extends AmazonProductsCore
         } else {
             if (array_key_exists('ASINList.ASIN.1', $this->options)) {
                 $this->options['Action'] = 'GetProductCategoriesForASIN';
+                $this->options['ASIN'] = $this->options["ASINList.ASIN.1"];
+                unset($this->options["ASINList.ASIN.1"]);
                 $this->resetSKUs();
             }
         }

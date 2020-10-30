@@ -112,7 +112,7 @@ abstract class AmazonCore
     protected $mockIndex = 0;
     protected $env;
     protected $marketplaceId;
-    protected $rawResponses = array();
+    protected $rawResponses = [];
     protected $proxyInfo = [];
 
     /**
@@ -120,17 +120,18 @@ abstract class AmazonCore
      *
      * This constructor is called when initializing all objects in this library.
      * The parameters are passed by the child objects' constructors.
-     * @param string $s <p>Name for the store you want to use as seen in the config file.
-     * If this is not set to a valid name, none of these objects will work.</p>
-     * @param boolean $mock [optional] <p>This is a flag for enabling Mock Mode.
-     * When this is set to <b>TRUE</b>, the object will fetch responses from
-     * files you specify instead of sending the requests to Amazon.
-     * The log will indicate whether mock mode is on or off each time
-     * an object is initialized. This defaults to <b>FALSE</b>.</p>
-     * @param array|string $m [optional] <p>The files (or file) to use in Mock Mode.
-     * When Mock Mode is enabled, the object will retrieve one of these files
-     * from the list to use as a response. See <i>setMock</i> for more information.</p>
-     * @param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
+     *
+     * @param string       $s      <p>Name for the store you want to use as seen in the config file.
+     *                             If this is not set to a valid name, none of these objects will work.</p>
+     * @param boolean      $mock   [optional] <p>This is a flag for enabling Mock Mode.
+     *                             When this is set to <b>TRUE</b>, the object will fetch responses from
+     *                             files you specify instead of sending the requests to Amazon.
+     *                             The log will indicate whether mock mode is on or off each time
+     *                             an object is initialized. This defaults to <b>FALSE</b>.</p>
+     * @param array|string $m      [optional] <p>The files (or file) to use in Mock Mode.
+     *                             When Mock Mode is enabled, the object will retrieve one of these files
+     *                             from the list to use as a response. See <i>setMock</i> for more information.</p>
+     * @param string       $config [optional] <p>An alternate config file to set. Used for testing.</p>
      */
     protected function __construct($s, $mock = false, $m = null)
     {
@@ -139,8 +140,8 @@ abstract class AmazonCore
         $this->setMock($mock, $m);
 
         $this->env = __DIR__ . '/environment.php';
-        $this->options['SignatureVersion'] = 2;
-        $this->options['SignatureMethod'] = 'HmacSHA256';
+        $this->options[ 'SignatureVersion' ] = 2;
+        $this->options[ 'SignatureMethod' ] = 'HmacSHA256';
     }
 
     /**
@@ -156,12 +157,13 @@ abstract class AmazonCore
      * This method is also used to set response codes used by certain functions.
      * Mock Mode is particularly useful when you need
      * to test functions such as canceling orders or adding new products.
-     * @param boolean $b [optional] <p>When set to <b>TRUE</b>, Mock Mode is
-     * enabled for the object. Defaults to <b>TRUE</b>.</p>
+     *
+     * @param boolean              $b     [optional] <p>When set to <b>TRUE</b>, Mock Mode is
+     *                                    enabled for the object. Defaults to <b>TRUE</b>.</p>
      * @param array|string|integer $files [optional] <p>The list of files (or single file)
-     * to be used with Mock Mode. If a single string is given, this method will
-     * put it into an array. Integers can also be given, for use in <i>fetchMockResponse</i>.
-     * These numbers should only be response codes, such as <b>200</b> or <b>404</b>.</p>
+     *                                    to be used with Mock Mode. If a single string is given, this method will
+     *                                    put it into an array. Integers can also be given, for use in <i>fetchMockResponse</i>.
+     *                                    These numbers should only be response codes, such as <b>200</b> or <b>404</b>.</p>
      */
     public function setMock($b = true, $files = null)
     {
@@ -173,8 +175,8 @@ abstract class AmazonCore
             }
 
             if (is_string($files)) {
-                $this->mockFiles = array();
-                $this->mockFiles[0] = $files;
+                $this->mockFiles = [];
+                $this->mockFiles[ 0 ] = $files;
                 $this->log("Single Mock File set: $files");
             } else {
                 if (is_array($files)) {
@@ -182,8 +184,8 @@ abstract class AmazonCore
                     $this->log("Mock files array set.");
                 } else {
                     if (is_numeric($files)) {
-                        $this->mockFiles = array();
-                        $this->mockFiles[0] = $files;
+                        $this->mockFiles = [];
+                        $this->mockFiles[ 0 ] = $files;
                         $this->log("Single Mock Response set: $files");
                     }
                 }
@@ -199,10 +201,12 @@ abstract class AmazonCore
      * The success or failure of the operation will be recorded in the log,
      * including the name and path of the file involved. For retrieving response
      * codes, see <i>fetchMockResponse</i>.
+     *
      * @param boolean $load [optional] <p>Set this to <b>FALSE</b> to prevent the
-     * method from loading the file's contents into a SimpleXMLObject. This is
-     * for when the contents of the file are not in XML format, or if you simply
-     * want to retrieve the raw string of the file.</p>
+     *                      method from loading the file's contents into a SimpleXMLObject. This is
+     *                      for when the contents of the file are not in XML format, or if you simply
+     *                      want to retrieve the raw string of the file.</p>
+     *
      * @return SimpleXMLObject|string|boolean <p>A SimpleXMLObject holding the
      * contents of the file, or a string of said contents if <i>$load</i> is set to
      * <b>FALSE</b>. The return will be <b>FALSE</b> if the file cannot be
@@ -219,12 +223,12 @@ abstract class AmazonCore
             $this->resetMock();
         }
         //check for absolute/relative file paths
-        if (strpos($this->mockFiles[$this->mockIndex], '/') === 0 || strpos($this->mockFiles[$this->mockIndex],
+        if (strpos($this->mockFiles[ $this->mockIndex ], '/') === 0 || strpos($this->mockFiles[ $this->mockIndex ],
                 '..') === 0
         ) {
-            $url = $this->mockFiles[$this->mockIndex];
+            $url = $this->mockFiles[ $this->mockIndex ];
         } else {
-            $url = 'mock/' . $this->mockFiles[$this->mockIndex];
+            $url = 'mock/' . $this->mockFiles[ $this->mockIndex ];
         }
         $this->mockIndex++;
 
@@ -255,6 +259,7 @@ abstract class AmazonCore
      * Sets mock index back to 0.
      *
      * This method is used for returning to the beginning of the mock file list.
+     *
      * @param boolean $mute [optional]<p>Set to <b>TRUE</b> to prevent logging.</p>
      */
     protected function resetMock($mute = false)
@@ -294,54 +299,54 @@ abstract class AmazonCore
             $this->log("End of Mock List, resetting to 0");
             $this->resetMock();
         }
-        if (!is_numeric($this->mockFiles[$this->mockIndex])) {
+        if (!is_numeric($this->mockFiles[ $this->mockIndex ])) {
             $this->log("fetchMockResponse only works with response code numbers", 'Warning');
             return false;
         }
 
-        $r = array();
-        $r['head'] = 'HTTP/1.1 200 OK';
-        $r['body'] = '<?xml version="1.0"?><root></root>';
-        $r['code'] = $this->mockFiles[$this->mockIndex];
+        $r = [];
+        $r[ 'head' ] = 'HTTP/1.1 200 OK';
+        $r[ 'body' ] = '<?xml version="1.0"?><root></root>';
+        $r[ 'code' ] = $this->mockFiles[ $this->mockIndex ];
         $this->mockIndex++;
-        if ($r['code'] == 200) {
-            $r['answer'] = 'OK';
-            $r['ok'] = 1;
+        if ($r[ 'code' ] == 200) {
+            $r[ 'answer' ] = 'OK';
+            $r[ 'ok' ] = 1;
         } else {
-            if ($r['code'] == 404) {
-                $r['answer'] = 'Not Found';
-                $r['error'] = 'Not Found';
-                $r['ok'] = 0;
+            if ($r[ 'code' ] == 404) {
+                $r[ 'answer' ] = 'Not Found';
+                $r[ 'error' ] = 'Not Found';
+                $r[ 'ok' ] = 0;
             } else {
-                if ($r['code'] == 503) {
-                    $r['answer'] = 'Service Unavailable';
-                    $r['error'] = 'Service Unavailable';
-                    $r['ok'] = 0;
+                if ($r[ 'code' ] == 503) {
+                    $r[ 'answer' ] = 'Service Unavailable';
+                    $r[ 'error' ] = 'Service Unavailable';
+                    $r[ 'ok' ] = 0;
                 } else {
-                    if ($r['code'] == 400) {
-                        $r['answer'] = 'Bad Request';
-                        $r['error'] = 'Bad Request';
-                        $r['ok'] = 0;
+                    if ($r[ 'code' ] == 400) {
+                        $r[ 'answer' ] = 'Bad Request';
+                        $r[ 'error' ] = 'Bad Request';
+                        $r[ 'ok' ] = 0;
                     }
                 }
             }
         }
 
-        if ($r['code'] != 200) {
-            $r['body'] = '<?xml version="1.0"?>
+        if ($r[ 'code' ] != 200) {
+            $r[ 'body' ] = '<?xml version="1.0"?>
 <ErrorResponse xmlns="http://mws.amazonaws.com/doc/2009-01-01/">
   <Error>
     <Type>Sender</Type>
-    <Code>' . $r['error'] . '</Code>
-    <Message>' . $r['answer'] . '</Message>
+    <Code>' . $r[ 'error' ] . '</Code>
+    <Message>' . $r[ 'answer' ] . '</Message>
   </Error>
   <RequestID>123</RequestID>
 </ErrorResponse>';
         }
 
 
-        $r['headarray'] = array();
-        $this->log("Returning Mock Response: " . $r['code']);
+        $r[ 'headarray' ] = [];
+        $this->log("Returning Mock Response: " . $r[ 'code' ]);
         return $r;
     }
 
@@ -350,8 +355,10 @@ abstract class AmazonCore
      *
      * Verifies whether or not the HTTP response has the 200 OK code. If the code
      * is not 200, the incident and error message returned are logged.
+     *
      * @param array $r <p>The HTTP response array. Expects the array to have
-     * the fields <i>code</i>, <i>body</i>, and <i>error</i>.</p>
+     *                 the fields <i>code</i>, <i>body</i>, and <i>error</i>.</p>
+     *
      * @return boolean <b>TRUE</b> if the status is 200 OK, <b>FALSE</b> otherwise.
      */
     protected function checkResponse($r)
@@ -360,11 +367,11 @@ abstract class AmazonCore
             $this->log("No Response found", 'Warning');
             return false;
         }
-        if ($r['code'] == 200) {
+        if ($r[ 'code' ] == 200) {
             return true;
         } else {
-            $xml = simplexml_load_string($r['body'])->Error;
-            $this->log("Bad Response! " . $r['code'] . " " . $r['error'] . ": " . $xml->Code . " - " . $xml->Message,
+            $xml = simplexml_load_string($r[ 'body' ])->Error;
+            $this->log("Bad Response! " . $r[ 'code' ] . " " . $r[ 'error' ] . ": " . $xml->Code . " - " . $xml->Message,
                 'Urgent');
             return false;
         }
@@ -398,7 +405,9 @@ abstract class AmazonCore
      * for making requests with Amazon. If the store cannot be found in the
      * config file, or if any of the key values are missing,
      * the incident will be logged.
+     *
      * @param string $s <p>The store name to look for.</p>
+     *
      * @throws Exception If the file can't be found.
      */
     public function setStore($s)
@@ -413,34 +422,34 @@ abstract class AmazonCore
 
         if (array_key_exists($s, $store)) {
             $this->storeName = $s;
-            if (array_key_exists('merchantId', $store[$s])) {
-                $this->options['SellerId'] = $store[$s]['merchantId'];
+            if (array_key_exists('merchantId', $store[ $s ])) {
+                $this->options[ 'SellerId' ] = $store[ $s ][ 'merchantId' ];
             } else {
                 $this->log("Merchant ID is missing!", 'Warning');
             }
-            if (array_key_exists('keyId', $store[$s])) {
-                $this->options['AWSAccessKeyId'] = $store[$s]['keyId'];
+            if (array_key_exists('keyId', $store[ $s ])) {
+                $this->options[ 'AWSAccessKeyId' ] = $store[ $s ][ 'keyId' ];
             } else {
                 $this->log("Access Key ID is missing!", 'Warning');
             }
-            if (!array_key_exists('secretKey', $store[$s])) {
+            if (!array_key_exists('secretKey', $store[ $s ])) {
                 $this->log("Secret Key is missing!", 'Warning');
             }
             // Overwrite Amazon service url if specified
-            if (array_key_exists('amazonServiceUrl', $store[$s])) {
-                $AMAZON_SERVICE_URL = $store[$s]['amazonServiceUrl'];
+            if (array_key_exists('amazonServiceUrl', $store[ $s ])) {
+                $AMAZON_SERVICE_URL = $store[ $s ][ 'amazonServiceUrl' ];
                 $this->urlbase = $AMAZON_SERVICE_URL;
             }
-            if (array_key_exists('proxyInfo', $store[$s])) {
-                $this->proxyInfo = $store[$s]['proxyInfo'];
+            if (array_key_exists('proxyInfo', $store[ $s ])) {
+                $this->proxyInfo = $store[ $s ][ 'proxyInfo' ];
             }
 
-            if (array_key_exists('authToken', $store[$s]) && !empty($store[$s]['authToken'])) {
-                $this->options['MWSAuthToken'] = $store[$s]['authToken'];
+            if (array_key_exists('authToken', $store[ $s ]) && !empty($store[ $s ][ 'authToken' ])) {
+                $this->options[ 'MWSAuthToken' ] = $store[ $s ][ 'authToken' ];
             }
 
-            if (array_key_exists('marketplaceId', $store[$s]) && !empty($store[$s]['marketplaceId'])) {
-                $this->marketplaceId = $store[$s]['marketplaceId'];
+            if (array_key_exists('marketplaceId', $store[ $s ]) && !empty($store[ $s ][ 'marketplaceId' ])) {
+                $this->marketplaceId = $store[ $s ][ 'marketplaceId' ];
             }
 
         } else {
@@ -454,6 +463,7 @@ abstract class AmazonCore
      *
      * When the throttle stop is enabled, throttled requests will not  be repeated.
      * This setting is off by default.
+     *
      * @param boolean $b <p>Defaults to <b>TRUE</b>.</p>
      */
     public function setThrottleStop($b = true)
@@ -466,11 +476,13 @@ abstract class AmazonCore
      *
      * This method adds a message line to the log file defined by the config.
      * This includes the priority level, user IP, and a backtrace of the call.
-     * @param string $msg <p>The message to write to the log.</p>
+     *
+     * @param string $msg   <p>The message to write to the log.</p>
      * @param string $level [optional] <p>The priority level of the message.
-     * This is merely for the benefit of the user and does not affect how
-     * the code runs. The values used in this library are "Info", "Warning",
-     * "Urgent", and "Throttle".</p>
+     *                      This is merely for the benefit of the user and does not affect how
+     *                      the code runs. The values used in this library are "Info", "Warning",
+     *                      "Urgent", and "Throttle".</p>
+     *
      * @return boolean <b>FALSE</b> if the message is empty, NULL if logging is muted
      * @throws Exception If the file can't be written to.
      */
@@ -501,7 +513,7 @@ abstract class AmazonCore
                     $loglevel = 'info';
             }
 
-            call_user_func(array('Log', $loglevel), $msg);
+            call_user_func(['Log', $loglevel], $msg);
 
             if (isset($userName) && $userName != '') {
                 $name = $userName;
@@ -509,19 +521,19 @@ abstract class AmazonCore
                 $name = 'guest';
             }
 
-            if (isset($backtrace) && isset($backtrace[1]) && isset($backtrace[1]['file']) && isset($backtrace[1]['line']) && isset($backtrace[1]['function'])) {
-                $fileName = basename($backtrace[1]['file']);
-                $file = $backtrace[1]['file'];
-                $line = $backtrace[1]['line'];
-                $function = $backtrace[1]['function'];
+            if (isset($backtrace) && isset($backtrace[ 1 ]) && isset($backtrace[ 1 ][ 'file' ]) && isset($backtrace[ 1 ][ 'line' ]) && isset($backtrace[ 1 ][ 'function' ])) {
+                $fileName = basename($backtrace[ 1 ][ 'file' ]);
+                $file = $backtrace[ 1 ][ 'file' ];
+                $line = $backtrace[ 1 ][ 'line' ];
+                $function = $backtrace[ 1 ][ 'function' ];
             } else {
-                $fileName = basename($backtrace[0]['file']);
-                $file = $backtrace[0]['file'];
-                $line = $backtrace[0]['line'];
-                $function = $backtrace[0]['function'];
+                $fileName = basename($backtrace[ 0 ][ 'file' ]);
+                $file = $backtrace[ 0 ][ 'file' ];
+                $line = $backtrace[ 0 ][ 'line' ];
+                $function = $backtrace[ 0 ][ 'function' ];
             }
-            if (isset($_SERVER['REMOTE_ADDR'])) {
-                $ip = $_SERVER['REMOTE_ADDR'];
+            if (isset($_SERVER[ 'REMOTE_ADDR' ])) {
+                $ip = $_SERVER[ 'REMOTE_ADDR' ];
                 if ($ip == '127.0.0.1') {
                     $ip = 'local';
                 }//save some char
@@ -553,23 +565,29 @@ abstract class AmazonCore
      * The string given is passed through <i>strtotime</i> before being used. The
      * value returned is actually 30 seconds early, to prevent it from tripping up
      * Amazon. If no time is given, the current time is used.
+     *
      * @param string $time [optional] <p>The time to use. Since this value is
-     * passed through <i>strtotime</i> first, values such as "-1 hour" are fine.
-     * Defaults to the current time.</p>
+     *                     passed through <i>strtotime</i> first, values such as "-1 hour" are fine.
+     *                     Defaults to the current time.</p>
+     *
      * @return string Unix timestamp of the time, minus 30 seconds.
      */
     protected function genTime($time = false)
     {
         if (!$time) {
             $time = time();
-        } else if (is_numeric($time)) {
-            $time = (int)$time;
-        } else if (is_string($time)) {
-            $time = strtotime($time);
         } else {
-            throw new Exception('Invalid time input given');
+            if (is_numeric($time)) {
+                $time = (int)$time;
+            } else {
+                if (is_string($time)) {
+                    $time = strtotime($time);
+                } else {
+                    throw new Exception('Invalid time input given');
+                }
+            }
         }
-        return date('c', $time-120);
+        return date('c', $time - 120);
 
     }
 
@@ -592,15 +610,15 @@ abstract class AmazonCore
 
         $store = Config::get('amazon-mws.store');
 
-        if (array_key_exists($this->storeName, $store) && array_key_exists('secretKey', $store[$this->storeName])) {
-            $secretKey = $store[$this->storeName]['secretKey'];
+        if (array_key_exists($this->storeName, $store) && array_key_exists('secretKey', $store[ $this->storeName ])) {
+            $secretKey = $store[ $this->storeName ][ 'secretKey' ];
         } else {
             throw new Exception("Secret Key is missing!");
         }
 
-        unset($this->options['Signature']);
-        $this->options['Timestamp'] = $this->genTime();
-        $this->options['Signature'] = $this->_signParameters($this->options, $secretKey);
+        unset($this->options[ 'Signature' ]);
+        $this->options[ 'Timestamp' ] = $this->genTime();
+        $this->options[ 'Signature' ] = $this->_signParameters($this->options, $secretKey);
         return $this->_getParametersAsString($this->options);
     }
 
@@ -608,8 +626,10 @@ abstract class AmazonCore
      * Sends a request to Amazon via cURL
      *
      * This method will keep trying if the request was throttled.
-     * @param string $url <p>URL to feed to cURL</p>
-     * @param array $param <p>parameter array to feed to cURL</p>
+     *
+     * @param string $url   <p>URL to feed to cURL</p>
+     * @param array  $param <p>parameter array to feed to cURL</p>
+     *
      * @return array cURL response array
      */
     protected function sendRequest($url, $param)
@@ -618,8 +638,8 @@ abstract class AmazonCore
         $this->throttleCount = 0;
         $response = $this->fetchURL($url, $param);
 
-        if (!isset($response['code'])) {
-            $this->log("Unrecognized response: ".print_r($response, true));
+        if (!isset($response[ 'code' ])) {
+            $this->log("Unrecognized response: " . print_r($response, true));
             return null;
         }
         while ($response['code'] == '503' && $this->throttleStop == false) {
@@ -643,6 +663,7 @@ abstract class AmazonCore
      * <li><b>ok</b> - Contains a <b>1</b> if the response was normal, or <b>0</b> if there was a problem</li>
      * <li><b>headarray</b> - An associative array of the head data, for convenience</li>
      * </ul>
+     *
      * @param int $i [optional] <p>If set, retrieves the specific response instead of the last one.
      * If the index for the response is not used, <b>FALSE</b> will be returned.</p>
      * @return array|boolean associative array of HTTP response or <b>FALSE</b> if not set yet
@@ -694,7 +715,9 @@ abstract class AmazonCore
 
     /**
      * Checks for a token and changes the proper options
+     *
      * @param SimpleXMLObject $xml <p>response data</p>
+     *
      * @return boolean <b>FALSE</b> if no XML data
      */
     protected function checkToken($xml)
@@ -704,19 +727,22 @@ abstract class AmazonCore
         }
         if ($xml->NextToken) {
             $this->tokenFlag = true;
-            $this->options['NextToken'] = (string)$xml->NextToken;
+            $this->options[ 'NextToken' ] = (string)$xml->NextToken;
         } else {
-            unset($this->options['NextToken']);
+            unset($this->options[ 'NextToken' ]);
             $this->tokenFlag = false;
         }
     }
 
     //Functions from Athena:
+
     /**
      * Get url or send POST data
+     *
      * @param string $url
-     * @param array $param ['Header']
-     *               $param['Post']
+     * @param array  $param ['Header']
+     *                      $param['Post']
+     *
      * @return array $return['ok'] 1  - success, (0,-1) - fail
      *               $return['body']  - response
      *               $return['error'] - error, if "ok" is not 1
@@ -724,7 +750,7 @@ abstract class AmazonCore
      */
     function fetchURL($url, $param)
     {
-        $return = array();
+        $return = [];
 
         $ch = curl_init();
 
@@ -735,31 +761,31 @@ abstract class AmazonCore
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         if (!empty($param)) {
-            if (!empty($param['Header'])) {
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $param['Header']);
+            if (!empty($param[ 'Header' ])) {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $param[ 'Header' ]);
             }
-            if (!empty($param['Post'])) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $param['Post']);
+            if (!empty($param[ 'Post' ])) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $param[ 'Post' ]);
             }
         }
 
         if (!empty($this->proxyInfo)
-            && !empty($this->proxyInfo['ip'])
-            && !empty($this->proxyInfo['port'])
+            && !empty($this->proxyInfo[ 'ip' ])
+            && !empty($this->proxyInfo[ 'port' ])
         ) {
             curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_BASIC);
-            curl_setopt($ch, CURLOPT_PROXY, $this->proxyInfo['ip']);
-            curl_setopt($ch, CURLOPT_PROXYPORT, $this->proxyInfo['port']);
-            if (!empty($this->proxyInfo['user_pwd'])) {
-                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyInfo['user_pwd']);
+            curl_setopt($ch, CURLOPT_PROXY, $this->proxyInfo[ 'ip' ]);
+            curl_setopt($ch, CURLOPT_PROXYPORT, $this->proxyInfo[ 'port' ]);
+            if (!empty($this->proxyInfo[ 'user_pwd' ])) {
+                curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxyInfo[ 'user_pwd' ]);
             }
             curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
         }
 
         $data = curl_exec($ch);
         if (curl_errno($ch)) {
-            $return['ok'] = -1;
-            $return['error'] = curl_error($ch);
+            $return[ 'ok' ] = -1;
+            $return[ 'error' ] = curl_error($ch);
             return $return;
         }
 
@@ -768,11 +794,11 @@ abstract class AmazonCore
         }
         $data = preg_split("/\r\n\r\n/", $data, 2, PREG_SPLIT_NO_EMPTY);
         if (!empty($data)) {
-            $return['head'] = (isset($data[0]) ? $data[0] : null);
-            $return['body'] = (isset($data[1]) ? $data[1] : null);
+            $return[ 'head' ] = (isset($data[ 0 ]) ? $data[ 0 ] : null);
+            $return[ 'body' ] = (isset($data[ 1 ]) ? $data[ 1 ] : null);
         } else {
-            $return['head'] = null;
-            $return['body'] = null;
+            $return[ 'head' ] = null;
+            $return[ 'body' ] = null;
         }
 
         $matches = array();
@@ -780,27 +806,27 @@ abstract class AmazonCore
         $return['code'] = '';
         $return['answer'] = '';
         if (!empty($matches)) {
-            $return['code'] = $matches[1];
-            $return['answer'] = $matches[2];
+            $return[ 'code' ] = $matches[ 1 ];
+            $return[ 'answer' ] = $matches[ 2 ];
         }
 
         preg_match("/meta http-equiv=.refresh. +content=.[0-9]*;url=([^'\"]*)/i", $return['body'], $matches);
         if (!empty($matches)) {
-            $return['location'] = $matches[1];
-            $return['code'] = '301';
+            $return[ 'location' ] = $matches[ 1 ];
+            $return[ 'code' ] = '301';
         }
 
-        if ($return['code'] == '200' || $return['code'] == '302') {
-            $return['ok'] = 1;
+        if ($return[ 'code' ] == '200' || $return[ 'code' ] == '302') {
+            $return[ 'ok' ] = 1;
         } else {
-            $return['error'] = (($return['answer'] and $return['answer'] != 'OK') ? $return['answer'] : 'Something wrong!');
-            $return['ok'] = 0;
+            $return[ 'error' ] = (($return[ 'answer' ] and $return[ 'answer' ] != 'OK') ? $return[ 'answer' ] : 'Something wrong!');
+            $return[ 'ok' ] = 0;
         }
 
-        foreach (preg_split('/\n/', $return['head'], -1, PREG_SPLIT_NO_EMPTY) as $value) {
+        foreach (preg_split('/\n/', $return[ 'head' ], -1, PREG_SPLIT_NO_EMPTY) as $value) {
             $data = preg_split('/:/', $value, 2, PREG_SPLIT_NO_EMPTY);
-            if (is_array($data) and isset($data['1'])) {
-                $return['headarray'][$data['0']] = trim($data['1']);
+            if (is_array($data) and isset($data[ '1' ])) {
+                $return[ 'headarray' ][ $data[ '0' ] ] = trim($data[ '1' ]);
             }
         }
 
@@ -814,7 +840,9 @@ abstract class AmazonCore
      * Reformats the provided string using rawurlencode while also replacing ~, copied from Amazon
      *
      * Almost the same as using rawurlencode
+     *
      * @param string $value
+     *
      * @return string
      */
     protected function _urlencode($value)
@@ -824,12 +852,14 @@ abstract class AmazonCore
 
     /**
      * Fuses all of the parameters together into a string, copied from Amazon
+     *
      * @param array $parameters
+     *
      * @return string
      */
     protected function _getParametersAsString(array $parameters)
     {
-        $queryParameters = array();
+        $queryParameters = [];
         foreach ($parameters as $key => $value) {
             $queryParameters[] = $key . '=' . $this->_urlencode($value);
         }
@@ -838,16 +868,18 @@ abstract class AmazonCore
 
     /**
      * validates signature and sets up signing of them, copied from Amazon
-     * @param array $parameters
+     *
+     * @param array  $parameters
      * @param string $key
+     *
      * @return string signed string
      * @throws Exception
      */
     protected function _signParameters(array $parameters, $key)
     {
-        $algorithm = $this->options['SignatureMethod'];
+        $algorithm = $this->options[ 'SignatureMethod' ];
         $stringToSign = null;
-        if (2 === $this->options['SignatureVersion']) {
+        if (2 === $this->options[ 'SignatureVersion' ]) {
             $stringToSign = $this->_calculateStringToSignV2($parameters);
 //            var_dump($stringToSign);
         } else {
@@ -858,6 +890,7 @@ abstract class AmazonCore
 
     /**
      * generates the string to sign, copied from Amazon
+     *
      * @param array $parameters
      * @return string
      */
@@ -866,13 +899,13 @@ abstract class AmazonCore
         $data = 'POST';
         $data .= "\n";
         $endpoint = parse_url($this->urlbase . $this->urlbranch);
-        $data .= $endpoint['host'];
+        $data .= $endpoint[ 'host' ];
         $data .= "\n";
-        $uri = array_key_exists('path', $endpoint) ? $endpoint['path'] : null;
+        $uri = array_key_exists('path', $endpoint) ? $endpoint[ 'path' ] : null;
         if (!isset ($uri)) {
             $uri = "/";
         }
-        $uriencoded = implode("/", array_map(array($this, "_urlencode"), explode("/", $uri)));
+        $uriencoded = implode("/", array_map([$this, "_urlencode"], explode("/", $uri)));
         $data .= $uriencoded;
         $data .= "\n";
         uksort($parameters, 'strcmp');
@@ -882,9 +915,11 @@ abstract class AmazonCore
 
     /**
      * Runs the hash, copied from Amazon
+     *
      * @param string $data
      * @param string $key
      * @param string $algorithm 'HmacSHA1' or 'HmacSHA256'
+     *
      * @return string
      * @throws Exception
      */
