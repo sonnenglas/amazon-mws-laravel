@@ -250,16 +250,13 @@ class AmazonShipmentList extends AmazonInboundCore implements \Iterator
         }
 
         $this->prepareToken();
-
         $url = $this->urlbase . $this->urlbranch;
-
-        $query = $this->genQuery();
-
         $path = $this->options['Action'] . 'Result';
+
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, array('Post' => $query));
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;

@@ -485,12 +485,10 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore
 
         $url = $this->urlbase . $this->urlbranch;
 
-        $query = $this->genQuery();
-
         if ($this->mockMode) {
             $response = $this->fetchMockResponse();
         } else {
-            $response = $this->sendRequest($url, array('Post' => $query));
+            $response = $this->sendRequest($url);
         }
         if (!$this->checkResponse($response)) {
             return false;

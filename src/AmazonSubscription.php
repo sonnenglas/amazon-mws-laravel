@@ -167,14 +167,12 @@ class AmazonSubscription extends AmazonSubscriptionCore
 
         $url = $this->urlbase . $this->urlbranch;
 
-        $query = $this->genQuery();
-
-        $path = $this->options[ 'Action' ] . 'Result';
+         $path = $this->options[ 'Action' ] . 'Result';
 
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, ['Post' => $query]);
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;
@@ -271,13 +269,11 @@ class AmazonSubscription extends AmazonSubscriptionCore
 
         $url = $this->urlbase . $this->urlbranch;
 
-        $query = $this->genQuery();
-
         $path = $this->options[ 'Action' ] . 'Result';
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, ['Post' => $query]);
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;
@@ -330,16 +326,13 @@ class AmazonSubscription extends AmazonSubscriptionCore
         }
 
         $this->prepareTest();
-
         $url = $this->urlbase . $this->urlbranch;
-
-        $query = $this->genQuery();
-
         $path = $this->options[ 'Action' ] . 'Result';
+
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, ['Post' => $query]);
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;
@@ -400,16 +393,13 @@ class AmazonSubscription extends AmazonSubscriptionCore
         }
 
         $this->prepareCreate();
-
         $url = $this->urlbase . $this->urlbranch;
-
-        $query = $this->genQuery();
-
         $path = $this->options[ 'Action' ] . 'Result';
+
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, ['Post' => $query]);
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;
@@ -481,14 +471,12 @@ class AmazonSubscription extends AmazonSubscriptionCore
         $this->prepareGet();
 
         $url = $this->urlbase . $this->urlbranch;
-
-        $query = $this->genQuery();
-
         $path = $this->options[ 'Action' ] . 'Result';
+
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, ['Post' => $query]);
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;
@@ -547,16 +535,13 @@ class AmazonSubscription extends AmazonSubscriptionCore
         }
 
         $this->prepareUpdate();
-
         $url = $this->urlbase . $this->urlbranch;
-
-        $query = $this->genQuery();
-
         $path = $this->options[ 'Action' ] . 'Result';
+
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, ['Post' => $query]);
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;
@@ -610,16 +595,13 @@ class AmazonSubscription extends AmazonSubscriptionCore
         }
 
         $this->prepareDelete();
-
         $url = $this->urlbase . $this->urlbranch;
-
-        $query = $this->genQuery();
-
         $path = $this->options[ 'Action' ] . 'Result';
+
         if ($this->mockMode) {
             $xml = $this->fetchMockFile()->$path;
         } else {
-            $response = $this->sendRequest($url, ['Post' => $query]);
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;

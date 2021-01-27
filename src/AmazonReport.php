@@ -100,12 +100,10 @@ class AmazonReport extends AmazonReportsCore
 
         $url = $this->urlbase . $this->urlbranch;
 
-        $query = $this->genQuery();
-
         if ($this->mockMode) {
             $this->rawreport = $this->fetchMockFile(false);
         } else {
-            $response = $this->sendRequest($url, array('Post' => $query));
+            $response = $this->sendRequest($url);
 
             if (!$this->checkResponse($response)) {
                 return false;

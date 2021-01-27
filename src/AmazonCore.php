@@ -632,11 +632,16 @@ abstract class AmazonCore
      *
      * @return array cURL response array
      */
-    protected function sendRequest($url, $param)
+    protected function sendRequest($url, $param = [])
     {
         $this->log("Making request to Amazon: " . $this->options['Action']);
         $this->throttleCount = 0;
-        $response = $this->fetchURL($url, $param);
+        if (!empty($param)) {
+            $response = $this->fetchURL($url, $param);
+        } else {
+            $query = $this->genQuery();
+            $response = $this->fetchURL($url, ['Post' => $query]);
+        }
 
         if (!isset($response[ 'code' ])) {
             $this->log("Unrecognized response: " . print_r($response, true));
@@ -645,7 +650,12 @@ abstract class AmazonCore
         while ($response['code'] == '503' && $this->throttleStop == false) {
             ++$this->throttleCount;
             $this->sleep();
-            $response = $this->fetchURL($url, $param);
+            if (!empty($param)) {
+                $response = $this->fetchURL($url, $param);
+            } else {
+                $query = $this->genQuery();
+                $response = $this->fetchURL($url, ['Post' => $query]);
+            }
         }
 
         $this->rawResponses[] = $response;
