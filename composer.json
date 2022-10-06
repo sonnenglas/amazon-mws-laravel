@@ -1,5 +1,5 @@
 {
-    "name": "sonnenglas/laravel-amazon-mws",
+    "name": "fcorbi/laravel-amazon-mws",
     "description": "Use Amazon's MWS web services with Laravel ^7.x. Based on creacoon/amazon-mws-laravel package and modified to make it compatible with latest Laravel releases (+ bugfixes).",
     "license": "Apache-2.0",
     "keywords": ["API", "Amazon", "PHP", "MWS", "Laravel"],
