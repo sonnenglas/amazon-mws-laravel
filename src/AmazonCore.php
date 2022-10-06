@@ -459,6 +459,17 @@ abstract class AmazonCore
     }
 
     /**
+     * Sets feed options.
+     * 
+     * Thise methods set field "FeedOptions" required to send _UPLOAD_ORDER_INVOICE_
+     * example value could be "metadata:orderid=%s;metadata:totalAmount=%s;metadata:totalvatamount=%s;metadata:invoicenumber=%s";
+     */
+    public function setFeedOptions($feedOptions)
+    {
+        $this->options["FeedOptions"] = $feedOptions;
+    }
+    
+    /**
      * Enables or disables the throttle stop.
      *
      * When the throttle stop is enabled, throttled requests will not  be repeated.
