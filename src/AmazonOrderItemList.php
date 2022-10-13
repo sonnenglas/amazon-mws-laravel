@@ -215,6 +215,10 @@ class AmazonOrderItemList extends AmazonOrderCore implements Iterator
             if (isset($item->BuyerCustomizedInfo->CustomizedURL)){
                 $this->itemList[$n]['BuyerCustomizedInfo'] = (string)$item->BuyerCustomizedInfo->CustomizedURL;
             }
+            if (isset($item->BuyerRequestedCancel)){
+                $this->itemList[$n]['BuyerRequestedCancel']['isBuyerRequestedCancel'] = (bool)$item->BuyerRequestedCancel->isBuyerRequestedCancel;
+                $this->itemList[$n]['BuyerRequestedCancel']['buyerCancelReason'] = (string)$item->BuyerRequestedCancel->buyerCancelReason;
+            }
             if (isset($item->PointsGranted)){
                 $this->itemList[$n]['PointsGranted']['PointsNumber'] = (string)$item->PointsGranted->PointsNumber;
                 $this->itemList[$n]['PointsGranted']['Amount'] = (string)$item->PointsGranted->PointsMonetaryValue->Amount;
